@@ -161,19 +161,20 @@ function TerminalSection() {
 
       <div
         style={{
-          background: "#0f0f12",
+          background: "#060609",
           border: "1px solid var(--border)",
-          borderRadius: 10,
+          borderRadius: 12,
           padding: "1rem 1.25rem",
         }}
       >
         <div
           style={{
-            fontSize: "0.68rem",
+            fontSize: "0.64rem",
             color: "var(--text-2)",
-            marginBottom: "0.6rem",
+            marginBottom: "0.65rem",
             textTransform: "uppercase",
-            letterSpacing: "0.08em",
+            letterSpacing: "0.1em",
+            fontWeight: 600,
           }}
         >
           Preview
@@ -183,16 +184,16 @@ function TerminalSection() {
             fontFamily: `"${terminalFontFamily}", ui-monospace, monospace`,
             fontSize: terminalFontSize,
             lineHeight: terminalLineHeight,
-            color: "#d4d4d8",
+            color: "#d4d4e8",
           }}
         >
-          <span style={{ color: "#22d17a" }}>user@host</span>
-          <span style={{ color: "#4c4c58" }}>:</span>
-          <span style={{ color: "#7c6fff" }}>~</span>
-          <span style={{ color: "#4c4c58" }}> $</span>
+          <span style={{ color: "#34d399" }}>user@host</span>
+          <span style={{ color: "#40404e" }}>:</span>
+          <span style={{ color: "#818cf8" }}>~</span>
+          <span style={{ color: "#40404e" }}> $</span>
           <span> ssh root@192.168.1.10</span>
           <br />
-          <span style={{ color: "#6b6b78" }}>Welcome to Ubuntu 24.04 LTS</span>
+          <span style={{ color: "#40404e" }}>Welcome to Ubuntu 24.04 LTS</span>
         </div>
       </div>
     </div>
@@ -272,7 +273,7 @@ function KeysSection() {
       </div>
 
       {keys.length === 0 ? (
-        <div className={styles.emptyKeys}>No SSH keys in vault. Generate or import one below.</div>
+        <div className={styles.emptyKeys}>No SSH keys in vault — generate or import one below.</div>
       ) : (
         <div className={styles.keyList}>
           {keys.map((key) => (
@@ -294,14 +295,11 @@ function KeysSection() {
                   className="btn btn-ghost btn-sm"
                   onClick={() => handleCopy(key)}
                   title="Copy public key"
-                  style={{ minWidth: 52, color: copiedId === key.id ? "var(--green)" : undefined }}
+                  style={{ minWidth: 60, color: copiedId === key.id ? "var(--green)" : undefined }}
                 >
                   {copiedId === key.id ? "✓ Copied" : "Copy"}
                 </button>
-                <button
-                  className="btn btn-danger btn-sm"
-                  onClick={() => setDeleteTarget(key)}
-                >
+                <button className="btn btn-danger btn-sm" onClick={() => setDeleteTarget(key)}>
                   Del
                 </button>
               </div>
@@ -380,10 +378,7 @@ function KeysSection() {
               />
             </div>
             <div className={styles.formActions}>
-              <button
-                className="btn btn-ghost btn-sm"
-                onClick={() => { setImportOpen(false); setImportName(""); setImportPem(""); }}
-              >
+              <button className="btn btn-ghost btn-sm" onClick={() => { setImportOpen(false); setImportName(""); setImportPem(""); }}>
                 Cancel
               </button>
               <button
@@ -417,9 +412,10 @@ function AboutSection() {
       <div className={styles.sectionTitle}>About</div>
       <div className={styles.sectionSub}>Dassh SSH Session Manager</div>
 
+      <div className={styles.versionBadge}>v0.1.0</div>
+
       <div className={styles.aboutCard}>
         {[
-          ["Version", "0.1.0"],
           ["Framework", "Tauri 2 + React 18"],
           ["SSH library", "russh 0.44"],
           ["Encryption", "ChaCha20-Poly1305"],
@@ -433,7 +429,7 @@ function AboutSection() {
         ))}
       </div>
 
-      <p style={{ fontSize: "0.78rem", color: "var(--text-2)", lineHeight: 1.65 }}>
+      <p style={{ fontSize: "0.78rem", color: "var(--text-2)", lineHeight: 1.7 }}>
         All credentials are encrypted locally. Your master password is never stored — it is used
         solely to derive the vault encryption key via Argon2id. Nothing leaves this device.
       </p>

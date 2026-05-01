@@ -32,7 +32,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   const push = useCallback((message: string, kind: Kind) => {
     const id = Math.random().toString(36).slice(2);
     setToasts((t) => [...t, { id, message, kind }]);
-    setTimeout(() => setToasts((t) => t.filter((x) => x.id !== id)), 3500);
+    setTimeout(() => setToasts((t) => t.filter((x) => x.id !== id)), 3800);
   }, []);
 
   return (
@@ -43,10 +43,31 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   );
 }
 
-const KIND: Record<Kind, { icon: string; iconBg: string; iconColor: string; border: string }> = {
-  success: { icon: "✓", iconBg: "rgba(45,216,114,0.15)", iconColor: "#2dd872", border: "rgba(45,216,114,0.35)" },
-  error: { icon: "!", iconBg: "rgba(240,82,82,0.15)", iconColor: "#f07070", border: "rgba(240,82,82,0.35)" },
-  info: { icon: "·", iconBg: "rgba(91,138,246,0.15)", iconColor: "#5b8af6", border: "rgba(91,138,246,0.35)" },
+const KIND_STYLES: Record<Kind, { accent: string; icon: ReactNode }> = {
+  success: {
+    accent: "var(--green)",
+    icon: (
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+        <polyline points="20 6 9 17 4 12" />
+      </svg>
+    ),
+  },
+  error: {
+    accent: "var(--red)",
+    icon: (
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+        <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+      </svg>
+    ),
+  },
+  info: {
+    accent: "var(--indigo)",
+    icon: (
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+        <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
+      </svg>
+    ),
+  },
 };
 
 function ToastContainer({ toasts }: { toasts: ToastItem[] }) {
@@ -72,43 +93,38 @@ function ToastContainer({ toasts }: { toasts: ToastItem[] }) {
 }
 
 function ToastBubble({ toast }: { toast: ToastItem }) {
-  const k = KIND[toast.kind];
+  const k = KIND_STYLES[toast.kind];
   return (
     <div
-      className="slide-in-right"
       style={{
-        background: "var(--bg-4)",
-        border: `1px solid ${k.border}`,
-        borderRadius: 8,
-        padding: "0.65rem 0.9rem",
+        background: "rgba(18, 18, 30, 0.94)",
+        backdropFilter: "blur(20px) saturate(160%)",
+        WebkitBackdropFilter: "blur(20px) saturate(160%)",
+        border: "1px solid var(--border-hi)",
+        borderLeft: `3px solid ${k.accent}`,
+        borderRadius: 10,
+        padding: "0.7rem 0.95rem",
         display: "flex",
         alignItems: "center",
-        gap: "0.6rem",
+        gap: "0.65rem",
         minWidth: 240,
         maxWidth: 340,
-        boxShadow: "0 4px 16px rgba(0,0,0,0.4)",
+        boxShadow: "0 8px 24px rgba(0,0,0,0.5)",
         pointerEvents: "all",
+        animation: "toastIn 0.22s cubic-bezier(0.34, 1.56, 0.64, 1)",
       }}
     >
       <span
         style={{
-          width: 20,
-          height: 20,
-          borderRadius: "50%",
-          background: k.iconBg,
-          color: k.iconColor,
+          color: k.accent,
           display: "flex",
           alignItems: "center",
-          justifyContent: "center",
-          fontSize: k.icon === "·" ? "1.4rem" : "0.78rem",
-          fontWeight: 700,
           flexShrink: 0,
-          lineHeight: 1,
         }}
       >
         {k.icon}
       </span>
-      <span style={{ fontSize: "0.84rem", color: "var(--text-0)", flex: 1, lineHeight: 1.45 }}>
+      <span style={{ fontSize: "0.84rem", color: "var(--text-0)", flex: 1, lineHeight: 1.5 }}>
         {toast.message}
       </span>
     </div>

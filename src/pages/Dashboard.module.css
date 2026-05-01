@@ -10,8 +10,8 @@
   align-items: center;
   justify-content: space-between;
   gap: 0.65rem;
-  padding: 0.6rem 1.1rem;
-  background: var(--bg-2);
+  padding: 0.65rem 1.25rem;
+  background: var(--bg-0);
   border-bottom: 1px solid var(--border);
   flex-shrink: 0;
 }
@@ -31,7 +31,7 @@
 .toolbarDivider {
   width: 1px;
   height: 18px;
-  background: var(--border);
+  background: var(--border-hi);
   margin: 0 0.15rem;
 }
 
@@ -50,6 +50,12 @@
   border-color: var(--border) !important;
   color: var(--text-1) !important;
   cursor: pointer;
+  border-radius: 7px !important;
+}
+.sortSelect:focus {
+  border-color: var(--indigo) !important;
+  box-shadow: 0 0 0 3px var(--indigo-glow) !important;
+  color: var(--text-0) !important;
 }
 
 .hostCount {
@@ -59,36 +65,36 @@
 }
 
 .kbd {
-  font-size: 0.65rem;
+  font-size: 0.62rem;
   color: var(--text-2);
-  background: var(--bg-3);
+  background: var(--bg-4);
   border: 1px solid var(--border-hi);
   border-radius: 4px;
   padding: 0.06rem 0.35rem;
   font-family: "Cascadia Code", "JetBrains Mono", ui-monospace, monospace;
   flex-shrink: 0;
-  margin-left: 0.2rem;
+  margin-left: 0.15rem;
 }
 
 .list {
   flex: 1;
   overflow-y: auto;
-  padding: 1rem 1.1rem 1.5rem;
+  padding: 1.1rem 1.25rem 2rem;
 }
 
 .groupHeader {
   display: flex;
   align-items: center;
-  gap: 0.55rem;
-  margin: 1.25rem 0 0.55rem;
+  gap: 0.6rem;
+  margin: 1.5rem 0 0.65rem;
   padding: 0 0.1rem;
 }
 .groupHeader:first-child { margin-top: 0; }
 .divider { flex: 1; height: 1px; background: var(--border); }
 .groupCount {
-  font-size: 0.67rem;
+  font-size: 0.64rem;
   color: var(--text-2);
-  background: var(--bg-3);
+  background: var(--bg-4);
   border: 1px solid var(--border);
   border-radius: 20px;
   padding: 0 0.38rem;
@@ -99,23 +105,29 @@
 .card {
   background: var(--bg-2);
   border: 1px solid var(--border);
-  border-radius: 10px;
-  margin-bottom: 0.45rem;
-  transition: background 0.12s, border-color 0.12s, box-shadow 0.12s, transform 0.1s;
+  border-radius: 14px;
+  margin-bottom: 0.55rem;
+  transition:
+    transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.22s ease,
+    border-color 0.22s ease;
   overflow: hidden;
+  animation: fadeUp 0.3s ease both;
 }
 .card:hover {
-  background: var(--bg-3);
-  border-color: var(--border-hi);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  border-color: rgba(129, 140, 248, 0.28);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(129, 140, 248, 0.12),
+    0 0 28px rgba(129, 140, 248, 0.06);
 }
 
 .cardBody {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.85rem 1rem;
+  gap: 0.8rem;
+  padding: 1rem 1.1rem;
 }
 
 .starBtn {
@@ -124,9 +136,9 @@
   border: none;
   cursor: pointer;
   color: var(--text-3);
-  padding: 0.2rem;
-  border-radius: 4px;
-  transition: color 0.1s, background 0.1s;
+  padding: 0.25rem;
+  border-radius: 5px;
+  transition: color 0.12s, background 0.12s;
   display: flex;
   align-items: center;
 }
@@ -138,7 +150,7 @@
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.28rem;
+  gap: 0.35rem;
 }
 
 .nameRow {
@@ -149,7 +161,7 @@
 }
 .hostName {
   font-weight: 600;
-  font-size: 0.88rem;
+  font-size: 0.9rem;
   color: var(--text-0);
   white-space: nowrap;
 }
@@ -157,7 +169,7 @@
 .addrRow {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.45rem;
 }
 .addr {
   font-size: 0.77rem;
@@ -174,22 +186,22 @@
   cursor: pointer;
   color: var(--text-2);
   font-size: 0.78rem;
-  padding: 0.14rem 0.28rem;
+  padding: 0.12rem 0.28rem;
   border-radius: 4px;
   transition: color 0.1s, background 0.1s;
   flex-shrink: 0;
   line-height: 1;
 }
-.copyBtn:hover  { color: var(--text-0); background: var(--bg-4); }
-.copied         { color: var(--green) !important; }
+.copyBtn:hover { color: var(--text-0); background: var(--bg-4); }
+.copied { color: var(--green) !important; }
 
 .lastConnected {
-  font-size: 0.68rem;
+  font-size: 0.67rem;
   color: var(--text-2);
   background: var(--bg-4);
   border: 1px solid var(--border);
   border-radius: 4px;
-  padding: 0.05rem 0.35rem;
+  padding: 0.05rem 0.38rem;
   flex-shrink: 0;
   white-space: nowrap;
 }
@@ -200,10 +212,11 @@
   gap: 0.35rem;
   flex-shrink: 0;
 }
+
 .cardSecondary {
   display: flex;
   gap: 0.35rem;
-  padding-left: 0.35rem;
+  padding-left: 0.4rem;
   border-left: 1px solid var(--border);
   align-items: center;
 }
@@ -211,39 +224,39 @@
 .qcBackdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   z-index: 500;
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  padding-top: 15vh;
+  padding-top: 14vh;
+  animation: fadeIn 0.15s ease-out;
 }
 
 .qcPanel {
-  background: var(--bg-4);
-  border: 1px solid var(--border-hi);
-  border-radius: 12px;
-  padding: 1.1rem;
-  width: 400px;
+  background: rgba(20, 20, 38, 0.92);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid var(--border-glow);
+  border-radius: 16px;
+  padding: 1.25rem;
+  width: 420px;
   max-width: calc(100vw - 2rem);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(129, 140, 248, 0.12);
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  animation: qcIn 0.14s ease-out;
-}
-
-@keyframes qcIn {
-  from { opacity: 0; transform: translateY(-10px) scale(0.97); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
+  gap: 0.85rem;
+  animation: scaleIn 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .qcTitle {
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: var(--text-2);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--indigo);
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
 }
 
 .qcInput {
@@ -255,15 +268,15 @@
   display: flex;
   flex-direction: column;
   gap: 1px;
-  margin: -0.25rem 0;
+  margin: -0.2rem 0;
 }
 
 .qcHistoryItem {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.3rem 0.5rem;
-  border-radius: 6px;
+  gap: 0.55rem;
+  padding: 0.32rem 0.55rem;
+  border-radius: 7px;
   background: transparent;
   border: none;
   color: var(--text-2);
@@ -273,13 +286,13 @@
   text-align: left;
   transition: background 0.08s, color 0.08s;
 }
-.qcHistoryItem:hover { background: var(--bg-3); color: var(--text-1); }
+.qcHistoryItem:hover { background: var(--bg-4); color: var(--text-0); }
 
 .qcActions {
   display: flex;
   gap: 0.5rem;
   justify-content: flex-end;
-  padding-top: 0.25rem;
+  padding-top: 0.3rem;
   border-top: 1px solid var(--border);
 }
 
@@ -288,30 +301,32 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 0.8rem;
+  gap: 0.9rem;
   padding: 5rem 2rem 3rem;
+  animation: fadeUp 0.3s ease;
 }
 .emptyIllo {
-  width: 64px;
-  height: 64px;
-  background: var(--accent-surface);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
+  width: 72px;
+  height: 72px;
+  background: var(--indigo-surface);
+  border: 1px solid rgba(129, 140, 248, 0.2);
+  border-radius: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.35rem;
+  box-shadow: 0 0 32px rgba(129, 140, 248, 0.12);
 }
 .emptyTitle {
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-weight: 600;
   color: var(--text-0);
 }
 .emptySub {
   font-size: 0.8rem;
   color: var(--text-2);
-  max-width: 300px;
-  line-height: 1.65;
+  max-width: 320px;
+  line-height: 1.7;
 }
 
 .noResults {
@@ -323,9 +338,10 @@
   text-align: center;
   color: var(--text-1);
   font-size: 0.85rem;
+  animation: fadeUp 0.25s ease;
 }
 .noResultsIcon {
   font-size: 1.8rem;
   color: var(--text-3);
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.3rem;
 }

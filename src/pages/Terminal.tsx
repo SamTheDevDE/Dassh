@@ -39,27 +39,27 @@ export function TerminalPage() {
       fontFamily: `"${terminalFontFamily}", ui-monospace, monospace`,
       lineHeight: terminalLineHeight,
       theme: {
-        background: "#0f0f12",
-        foreground: "#d4d4d8",
-        cursor: "#7c6fff",
-        cursorAccent: "#0f0f12",
-        selectionBackground: "#2e2e3a",
-        black: "#18181c",
+        background: "#060609",
+        foreground: "#d4d4e8",
+        cursor: "#818cf8",
+        cursorAccent: "#060609",
+        selectionBackground: "rgba(129,140,248,0.2)",
+        black: "#14141e",
         red: "#f87171",
-        green: "#22d17a",
+        green: "#34d399",
         yellow: "#fbbf24",
-        blue: "#7c6fff",
-        magenta: "#c084fc",
-        cyan: "#22d1c8",
-        white: "#a1a1aa",
-        brightBlack: "#3f3f46",
+        blue: "#818cf8",
+        magenta: "#a78bfa",
+        cyan: "#22d3ee",
+        white: "#a0a0b8",
+        brightBlack: "#3a3a50",
         brightRed: "#fca5a5",
-        brightGreen: "#4ade80",
+        brightGreen: "#6ee7b7",
         brightYellow: "#fde68a",
         brightBlue: "#a5b4fc",
-        brightMagenta: "#d8b4fe",
-        brightCyan: "#5eead4",
-        brightWhite: "#d4d4d8",
+        brightMagenta: "#c4b5fd",
+        brightCyan: "#67e8f9",
+        brightWhite: "#e8e8f8",
       },
     });
 
@@ -146,7 +146,7 @@ export function TerminalPage() {
         flexDirection: "column",
         height: "100%",
         position: "relative",
-        background: "#0f0f12",
+        background: "#060609",
       }}
     >
       <div
@@ -154,12 +154,13 @@ export function TerminalPage() {
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          padding: "0.5rem 1rem",
+          padding: "0.55rem 1rem",
           borderBottom: "1px solid var(--border)",
-          background: "var(--bg-2)",
+          background: "var(--bg-1)",
           flexShrink: 0,
           gap: "0.75rem",
           zIndex: 1,
+          height: 44,
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: "0.65rem", minWidth: 0 }}>
@@ -169,16 +170,31 @@ export function TerminalPage() {
               height: 8,
               borderRadius: "50%",
               flexShrink: 0,
+              position: "relative",
               background: sessionClosed ? "var(--text-3)" : "var(--green)",
-              boxShadow: sessionClosed ? "none" : "0 0 6px rgba(45,216,114,0.6)",
+              boxShadow: sessionClosed ? "none" : "0 0 8px rgba(52,211,153,0.7)",
               transition: "background 0.3s, box-shadow 0.3s",
             }}
-          />
+          >
+            {!sessionClosed && (
+              <span
+                style={{
+                  position: "absolute",
+                  inset: -3,
+                  borderRadius: "50%",
+                  border: "1.5px solid var(--green)",
+                  animation: "pulseRing 2s ease-out infinite",
+                  opacity: 0,
+                }}
+              />
+            )}
+          </span>
           <span
+            className="gradient-text"
             style={{
               fontFamily: '"Cascadia Code", "JetBrains Mono", ui-monospace, monospace',
-              fontSize: "0.8rem",
-              color: "var(--text-1)",
+              fontSize: "0.82rem",
+              fontWeight: 500,
               overflow: "hidden",
               textOverflow: "ellipsis",
               whiteSpace: "nowrap",
@@ -189,12 +205,12 @@ export function TerminalPage() {
           {sessionClosed && (
             <span
               style={{
-                fontSize: "0.72rem",
+                fontSize: "0.7rem",
                 color: "var(--text-2)",
                 background: "var(--bg-3)",
                 border: "1px solid var(--border)",
                 borderRadius: 4,
-                padding: "0.05rem 0.4rem",
+                padding: "0.06rem 0.42rem",
               }}
             >
               closed
@@ -210,7 +226,7 @@ export function TerminalPage() {
               border: "1px solid var(--border-hi)",
               borderRadius: 4,
               padding: "0.06rem 0.38rem",
-              fontFamily: "monospace",
+              fontFamily: '"Cascadia Code", ui-monospace, monospace',
             }}
           >
             Ctrl+Shift+W
@@ -221,34 +237,34 @@ export function TerminalPage() {
         </div>
       </div>
 
-      <div
-        ref={containerRef}
-        style={{ flex: 1, overflow: "hidden", padding: "2px 4px" }}
-      />
+      <div ref={containerRef} style={{ flex: 1, overflow: "hidden", padding: "2px 4px" }} />
 
       {sessionClosed && (
         <div
-          className="pop-in"
+          className="scale-in"
           style={{
             position: "absolute",
-            bottom: "1.5rem",
+            bottom: "1.75rem",
             left: "50%",
             transform: "translateX(-50%)",
-            background: "var(--bg-4)",
+            background: "rgba(20, 20, 38, 0.92)",
+            backdropFilter: "blur(20px) saturate(160%)",
+            WebkitBackdropFilter: "blur(20px) saturate(160%)",
             border: "1px solid var(--border-hi)",
-            borderRadius: 10,
-            padding: "0.85rem 1.1rem",
+            borderRadius: 12,
+            padding: "0.9rem 1.15rem",
             display: "flex",
             alignItems: "center",
-            gap: "0.85rem",
+            gap: "0.9rem",
             zIndex: 10,
-            boxShadow: "0 8px 24px rgba(0,0,0,0.5)",
+            boxShadow: "0 12px 32px rgba(0,0,0,0.6)",
+            whiteSpace: "nowrap",
           }}
         >
           <span
-            style={{ width: 7, height: 7, borderRadius: "50%", background: "var(--text-3)", flexShrink: 0 }}
+            style={{ width: 7, height: 7, borderRadius: "50%", background: "var(--yellow)", flexShrink: 0, boxShadow: "0 0 6px rgba(251,191,36,0.5)" }}
           />
-          <span style={{ color: "var(--text-1)", fontSize: "0.83rem", whiteSpace: "nowrap" }}>
+          <span style={{ color: "var(--text-1)", fontSize: "0.84rem" }}>
             Session ended
           </span>
           <button
@@ -256,7 +272,7 @@ export function TerminalPage() {
             onClick={handleReconnect}
             disabled={reconnecting}
           >
-            {reconnecting ? "Connecting…" : "Reconnect"}
+            {reconnecting ? <><span className="spinner" /> Connecting…</> : "Reconnect"}
           </button>
           <button className="btn btn-ghost btn-sm" onClick={handleDisconnect}>
             Close

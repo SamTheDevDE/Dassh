@@ -40,51 +40,59 @@ export function ConfirmModal({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
+        animation: "fadeIn 0.15s ease-out",
       }}
     >
       <div
         style={{
           position: "absolute",
           inset: 0,
-          background: "rgba(0, 0, 0, 0.7)",
+          background: "rgba(0, 0, 0, 0.65)",
+          backdropFilter: "blur(12px)",
+          WebkitBackdropFilter: "blur(12px)",
         }}
         onClick={onCancel}
       />
       <div
-        className="pop-in"
+        className="glass-hi scale-in"
         style={{
           position: "relative",
           zIndex: 1,
-          background: "var(--bg-4)",
           border: "1px solid var(--border-hi)",
-          borderRadius: 10,
-          padding: "1.5rem",
-          width: 340,
-          boxShadow: "0 16px 40px rgba(0, 0, 0, 0.6)",
+          borderRadius: 16,
+          width: 360,
+          maxWidth: "calc(100vw - 2rem)",
+          overflow: "hidden",
+          boxShadow: "0 24px 64px rgba(0, 0, 0, 0.65)",
         }}
       >
-        <h3 style={{ marginBottom: "0.5rem", fontSize: "0.95rem" }}>{title}</h3>
-        <p
-          style={{
-            color: "var(--text-1)",
-            fontSize: "0.84rem",
-            marginBottom: "1.5rem",
-            lineHeight: 1.6,
-          }}
-        >
-          {message}
-        </p>
-        <div style={{ display: "flex", justifyContent: "flex-end", gap: "0.5rem" }}>
-          <button className="btn btn-ghost" onClick={onCancel}>
-            Cancel
-          </button>
-          <button
-            className={`btn ${danger ? "btn-danger" : "btn-primary"}`}
-            onClick={onConfirm}
-            autoFocus
-          >
-            {confirmLabel}
-          </button>
+        {danger && (
+          <div
+            style={{
+              height: 3,
+              background: "linear-gradient(90deg, var(--red) 0%, rgba(248,113,113,0.3) 60%, transparent 100%)",
+            }}
+          />
+        )}
+        <div style={{ padding: "1.5rem" }}>
+          <h3 style={{ marginBottom: "0.5rem", fontSize: "0.95rem", color: "var(--text-0)" }}>
+            {title}
+          </h3>
+          <p style={{ color: "var(--text-1)", fontSize: "0.84rem", marginBottom: "1.5rem", lineHeight: 1.65 }}>
+            {message}
+          </p>
+          <div style={{ display: "flex", justifyContent: "flex-end", gap: "0.5rem" }}>
+            <button className="btn btn-ghost" onClick={onCancel}>
+              Cancel
+            </button>
+            <button
+              className={`btn ${danger ? "btn-danger" : "btn-primary"}`}
+              onClick={onConfirm}
+              autoFocus
+            >
+              {confirmLabel}
+            </button>
+          </div>
         </div>
       </div>
     </div>

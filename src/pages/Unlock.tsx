@@ -39,24 +39,58 @@ export function Unlock() {
 
   return (
     <div
-      className="page-fade"
       style={{
         height: "100dvh",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         background: "var(--bg-0)",
+        position: "relative",
+        overflow: "hidden",
       }}
     >
-      <div style={{ width: 360, padding: "0 1rem" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "0.7rem", marginBottom: "2rem" }}>
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          pointerEvents: "none",
+        }}
+      >
+        <div
+          style={{
+            position: "absolute",
+            top: "-10%",
+            left: "-5%",
+            width: "50%",
+            height: "60%",
+            background: "radial-gradient(ellipse, rgba(129,140,248,0.10) 0%, transparent 65%)",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            bottom: "-15%",
+            right: "-5%",
+            width: "50%",
+            height: "60%",
+            background: "radial-gradient(ellipse, rgba(167,139,250,0.07) 0%, transparent 65%)",
+          }}
+        />
+      </div>
+
+      <div
+        className="scale-in"
+        style={{ width: 380, padding: "0 1rem", position: "relative", zIndex: 1 }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "2.2rem" }}>
           <div
             style={{
-              width: 30,
-              height: 30,
-              background: "var(--accent)",
-              borderRadius: 7,
+              width: 36,
+              height: 36,
+              background: "linear-gradient(135deg, #ffffff 30%, #818cf8 100%)",
+              borderRadius: 10,
               flexShrink: 0,
+              boxShadow: "0 0 28px rgba(129,140,248,0.4), 0 4px 16px rgba(0,0,0,0.4)",
             }}
           />
           <div>
@@ -64,7 +98,7 @@ export function Unlock() {
               style={{
                 fontSize: "1rem",
                 fontWeight: 700,
-                letterSpacing: "0.1em",
+                letterSpacing: "0.12em",
                 textTransform: "uppercase",
                 color: "var(--text-0)",
                 lineHeight: 1.2,
@@ -72,27 +106,27 @@ export function Unlock() {
             >
               Dassh
             </div>
-            <div style={{ fontSize: "0.75rem", color: "var(--text-2)", marginTop: "0.1rem" }}>
+            <div style={{ fontSize: "0.72rem", color: "var(--text-2)", marginTop: "0.1rem" }}>
               SSH Session Manager
             </div>
           </div>
         </div>
 
         <div
+          className="glass-hi"
           style={{
-            background: "var(--bg-2)",
-            border: "1px solid var(--border)",
-            borderRadius: 10,
-            padding: "1.75rem",
+            border: "1px solid var(--border-hi)",
+            borderRadius: 16,
+            padding: "2rem",
           }}
         >
-          <div style={{ marginBottom: "1.4rem" }}>
-            <h2 style={{ fontSize: "1rem", marginBottom: "0.3rem" }}>
+          <div style={{ marginBottom: "1.5rem" }}>
+            <h2 style={{ fontSize: "1rem", marginBottom: "0.35rem", color: "var(--text-0)" }}>
               {vaultExists ? "Welcome back" : "Create vault"}
             </h2>
-            <p style={{ color: "var(--text-1)", fontSize: "0.82rem", lineHeight: 1.55 }}>
+            <p style={{ color: "var(--text-1)", fontSize: "0.82rem", lineHeight: 1.6 }}>
               {vaultExists
-                ? "Enter your master password to unlock."
+                ? "Enter your master password to unlock your vault."
                 : "Choose a strong master password to secure your credentials."}
             </p>
           </div>
@@ -126,14 +160,19 @@ export function Unlock() {
             <button
               type="submit"
               className="btn btn-primary btn-lg"
-              style={{ width: "100%", marginTop: "1.25rem" }}
+              style={{ width: "100%", marginTop: "1.4rem" }}
               disabled={loading}
             >
-              {loading
-                ? "Working…"
-                : vaultExists
-                ? "Unlock vault"
-                : "Create vault"}
+              {loading ? (
+                <>
+                  <span className="spinner" />
+                  Working…
+                </>
+              ) : vaultExists ? (
+                "Unlock vault"
+              ) : (
+                "Create vault"
+              )}
             </button>
           </form>
         </div>
@@ -143,9 +182,10 @@ export function Unlock() {
             style={{
               textAlign: "center",
               color: "var(--text-2)",
-              fontSize: "0.71rem",
-              marginTop: "0.9rem",
-              lineHeight: 1.65,
+              fontSize: "0.7rem",
+              marginTop: "1rem",
+              lineHeight: 1.7,
+              animation: "fadeIn 0.4s ease 0.3s both",
             }}
           >
             ChaCha20-Poly1305 · Argon2id · Credentials never leave this device

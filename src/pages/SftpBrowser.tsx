@@ -103,12 +103,13 @@ export function SftpBrowser() {
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          padding: "0.5rem 1rem",
+          padding: "0.55rem 1rem",
           borderBottom: "1px solid var(--border)",
-          background: "var(--bg-2)",
+          background: "var(--bg-1)",
           flexShrink: 0,
           gap: "1rem",
           zIndex: 1,
+          height: 44,
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: "0.65rem", minWidth: 0 }}>
@@ -118,15 +119,28 @@ export function SftpBrowser() {
               height: 8,
               borderRadius: "50%",
               flexShrink: 0,
-              background: "var(--accent)",
-              boxShadow: "0 0 6px rgba(91,138,246,0.6)",
+              background: "var(--blue)",
+              boxShadow: "0 0 8px rgba(91,138,246,0.6)",
+              position: "relative",
             }}
-          />
+          >
+            <span
+              style={{
+                position: "absolute",
+                inset: -3,
+                borderRadius: "50%",
+                border: "1.5px solid var(--blue)",
+                animation: "pulseRing 2s ease-out infinite",
+                opacity: 0,
+              }}
+            />
+          </span>
           <span
+            className="gradient-text"
             style={{
               fontFamily: '"Cascadia Code", "JetBrains Mono", ui-monospace, monospace',
-              fontSize: "0.8rem",
-              color: "var(--text-1)",
+              fontSize: "0.82rem",
+              fontWeight: 500,
               overflow: "hidden",
               textOverflow: "ellipsis",
               whiteSpace: "nowrap",
@@ -155,16 +169,16 @@ export function SftpBrowser() {
           gap: "0.25rem",
           padding: "0.4rem 1rem",
           borderBottom: "1px solid var(--border)",
-          fontSize: "0.82rem",
+          fontSize: "0.8rem",
           color: "var(--text-2)",
           flexShrink: 0,
           flexWrap: "wrap",
-          background: "var(--bg-2)",
+          background: "var(--bg-1)",
         }}
       >
         <button
           className="btn btn-ghost btn-sm"
-          style={{ padding: "0.1rem 0.35rem" }}
+          style={{ padding: "0.1rem 0.38rem", fontSize: "0.8rem" }}
           onClick={() => loadDir("/")}
         >
           /
@@ -176,7 +190,7 @@ export function SftpBrowser() {
               <span style={{ color: "var(--text-3)" }}>/</span>
               <button
                 className="btn btn-ghost btn-sm"
-                style={{ padding: "0.1rem 0.35rem" }}
+                style={{ padding: "0.1rem 0.38rem", fontSize: "0.8rem" }}
                 onClick={() => loadDir(crumbPath)}
               >
                 {part}
@@ -187,7 +201,7 @@ export function SftpBrowser() {
         {path !== "/" && (
           <button
             className="btn btn-ghost btn-sm"
-            style={{ marginLeft: "auto", padding: "0.1rem 0.4rem" }}
+            style={{ marginLeft: "auto", padding: "0.1rem 0.42rem", fontSize: "0.78rem" }}
             onClick={goUp}
           >
             ↑ Up
@@ -195,10 +209,10 @@ export function SftpBrowser() {
         )}
       </div>
 
-      <div style={{ flex: 1, overflowY: "auto" }}>
+      <div style={{ flex: 1, overflowY: "auto", background: "var(--bg-1)" }}>
         {loading ? (
-          <div style={{ padding: "3rem", textAlign: "center", color: "var(--text-2)", fontSize: "0.85rem" }}>
-            <span className="spinner" style={{ display: "inline-block", marginRight: "0.5rem" }} />
+          <div style={{ padding: "3rem", textAlign: "center", color: "var(--text-2)", fontSize: "0.85rem", display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
+            <span className="spinner" />
             Loading…
           </div>
         ) : entries.length === 0 ? (
@@ -213,12 +227,12 @@ export function SftpBrowser() {
                   <th
                     key={h}
                     style={{
-                      padding: "0.45rem 1rem",
+                      padding: "0.48rem 1rem",
                       textAlign: "left",
-                      fontSize: "0.72rem",
+                      fontSize: "0.64rem",
                       color: "var(--text-2)",
-                      fontWeight: 600,
-                      letterSpacing: "0.05em",
+                      fontWeight: 700,
+                      letterSpacing: "0.08em",
                       textTransform: "uppercase",
                     }}
                   >
@@ -234,20 +248,21 @@ export function SftpBrowser() {
                   style={{
                     borderBottom: "1px solid var(--border)",
                     transition: "background 0.1s",
+                    cursor: entry.is_dir ? "pointer" : "default",
                   }}
-                  onMouseEnter={(e) => (e.currentTarget.style.background = "var(--bg-2)")}
+                  onMouseEnter={(e) => (e.currentTarget.style.background = "var(--bg-3)")}
                   onMouseLeave={(e) => (e.currentTarget.style.background = "")}
                   onDoubleClick={() => entry.is_dir && loadDir(entry.path)}
                 >
-                  <td style={{ padding: "0.55rem 1rem" }}>
+                  <td style={{ padding: "0.6rem 1rem" }}>
                     <span
                       style={{
                         cursor: entry.is_dir ? "pointer" : "default",
-                        color: entry.is_dir ? "var(--accent)" : "var(--text-0)",
+                        color: entry.is_dir ? "var(--indigo)" : "var(--text-0)",
                         fontSize: "0.85rem",
                         display: "flex",
                         alignItems: "center",
-                        gap: "0.5rem",
+                        gap: "0.55rem",
                       }}
                       onClick={() => entry.is_dir && loadDir(entry.path)}
                     >
@@ -264,18 +279,27 @@ export function SftpBrowser() {
                       {entry.name}
                     </span>
                   </td>
-                  <td style={{ padding: "0.55rem 1rem", color: "var(--text-2)", fontSize: "0.8rem" }}>
+                  <td style={{ padding: "0.6rem 1rem", color: "var(--text-2)", fontSize: "0.8rem" }}>
                     {entry.is_dir ? "—" : formatSize(entry.size)}
                   </td>
-                  <td style={{ padding: "0.55rem 1rem", color: "var(--text-2)", fontSize: "0.8rem" }}>
+                  <td style={{ padding: "0.6rem 1rem", color: "var(--text-2)", fontSize: "0.8rem" }}>
                     {entry.modified ? new Date(entry.modified * 1000).toLocaleDateString() : "—"}
                   </td>
-                  <td style={{ padding: "0.55rem 0.75rem", textAlign: "right" }}>
+                  <td style={{ padding: "0.6rem 0.75rem", textAlign: "right" }}>
                     <button
-                      className="btn btn-danger btn-sm"
+                      className="btn-icon"
                       onClick={() => setDeleteTarget(entry)}
+                      title={`Delete ${entry.name}`}
+                      style={{ color: "var(--text-2)" }}
+                      onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.color = "var(--red)"; (e.currentTarget as HTMLButtonElement).style.background = "var(--red-surface)"; }}
+                      onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.color = "var(--text-2)"; (e.currentTarget as HTMLButtonElement).style.background = "transparent"; }}
                     >
-                      Del
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+                        <polyline points="3 6 5 6 21 6" />
+                        <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                        <path d="M10 11v6M14 11v6" />
+                        <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+                      </svg>
                     </button>
                   </td>
                 </tr>
@@ -290,26 +314,28 @@ export function SftpBrowser() {
           style={{
             position: "fixed",
             inset: 0,
-            background: "rgba(0,0,0,0.65)",
+            background: "rgba(0,0,0,0.6)",
+            backdropFilter: "blur(10px)",
+            WebkitBackdropFilter: "blur(10px)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             zIndex: 200,
+            animation: "fadeIn 0.15s ease-out",
           }}
           onClick={(e) => e.target === e.currentTarget && setMkdirOpen(false)}
         >
           <div
-            className="pop-in"
+            className="glass-hi scale-in"
             style={{
-              background: "var(--bg-4)",
               border: "1px solid var(--border-hi)",
-              borderRadius: 14,
+              borderRadius: 16,
               padding: "1.5rem",
               width: 340,
-              boxShadow: "0 24px 60px rgba(0,0,0,0.6)",
+              boxShadow: "0 24px 64px rgba(0,0,0,0.65)",
             }}
           >
-            <h3 style={{ fontSize: "0.95rem", marginBottom: "1rem" }}>New folder</h3>
+            <h3 style={{ fontSize: "0.95rem", marginBottom: "1.1rem", color: "var(--text-0)" }}>New folder</h3>
             <div className="field">
               <label>Folder name</label>
               <input

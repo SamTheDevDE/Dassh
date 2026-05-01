@@ -20,6 +20,12 @@ const DEFAULT: HostInput = {
   jump_host_id: undefined,
 };
 
+const AUTH_OPTIONS: { value: HostInput["auth_type"]; label: string }[] = [
+  { value: "password", label: "Password" },
+  { value: "key",      label: "SSH Key"  },
+  { value: "agent",    label: "Agent"    },
+];
+
 export function HostForm({ initial, prefill, onSaved, onCancel }: Props) {
   const keys = useVaultStore((s) => s.keys);
   const addHost = useVaultStore((s) => s.addHost);
@@ -77,7 +83,7 @@ export function HostForm({ initial, prefill, onSaved, onCancel }: Props) {
         />
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 88px", gap: "0.75rem" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 90px", gap: "0.75rem" }}>
         <div className="field">
           <label>Hostname / IP</label>
           <input
@@ -111,20 +117,42 @@ export function HostForm({ initial, prefill, onSaved, onCancel }: Props) {
 
       <div className="field">
         <label>Authentication</label>
-        <select
-          value={form.auth_type}
-          onChange={(e) => set("auth_type", e.target.value as HostInput["auth_type"])}
-        >
-          <option value="password">Password</option>
-          <option value="key">SSH Key</option>
-          <option value="agent">SSH Agent</option>
-        </select>
+        <div style={{ display: "flex", gap: "0.4rem", marginTop: "0.1rem" }}>
+          {AUTH_OPTIONS.map((opt) => (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => set("auth_type", opt.value)}
+              style={{
+                flex: 1,
+                padding: "0.38rem 0.5rem",
+                borderRadius: 7,
+                border: "1px solid",
+                fontSize: "0.8rem",
+                fontWeight: 500,
+                cursor: "pointer",
+                fontFamily: "inherit",
+                transition: "background 0.12s, border-color 0.12s, color 0.12s",
+                background: form.auth_type === opt.value ? "var(--indigo-surface)" : "var(--bg-3)",
+                borderColor: form.auth_type === opt.value ? "var(--indigo)" : "var(--border-hi)",
+                color: form.auth_type === opt.value ? "var(--indigo)" : "var(--text-1)",
+              }}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
       </div>
 
       {form.auth_type === "password" && (
         <div className="field">
           <label>
-            {initial ? "Password — leave blank to keep current" : "Password"}
+            {initial ? "Password" : "Password"}
+            {initial && (
+              <span style={{ color: "var(--text-2)", fontWeight: 400, marginLeft: "0.35rem" }}>
+                leave blank to keep current
+              </span>
+            )}
           </label>
           <input
             type="password"
@@ -139,8 +167,8 @@ export function HostForm({ initial, prefill, onSaved, onCancel }: Props) {
         <div className="field">
           <label>SSH Key</label>
           {keys.length === 0 ? (
-            <p style={{ color: "var(--text-2)", fontSize: "0.82rem", marginTop: "0.25rem" }}>
-              No keys in vault. Add one in Settings.
+            <p style={{ color: "var(--text-2)", fontSize: "0.82rem", marginTop: "0.25rem", lineHeight: 1.6 }}>
+              No keys in vault — add one in Settings.
             </p>
           ) : (
             <select
@@ -187,7 +215,7 @@ export function HostForm({ initial, prefill, onSaved, onCancel }: Props) {
           display: "flex",
           gap: "0.5rem",
           justifyContent: "flex-end",
-          marginTop: "1.25rem",
+          marginTop: "1.4rem",
           paddingTop: "1rem",
           borderTop: "1px solid var(--border)",
         }}
@@ -196,7 +224,12 @@ export function HostForm({ initial, prefill, onSaved, onCancel }: Props) {
           Cancel
         </button>
         <button type="submit" className="btn btn-primary" disabled={saving}>
-          {saving ? "Saving…" : initial ? "Save changes" : "Add host"}
+          {saving ? (
+            <>
+              <span className="spinner" />
+              Saving…
+            </>
+          ) : initial ? "Save changes" : "Add host"}
         </button>
       </div>
     </form>

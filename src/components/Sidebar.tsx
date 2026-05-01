@@ -75,6 +75,8 @@ export function Sidebar() {
 
   return (
     <aside className={styles.sidebar}>
+      <div className={styles.aurora} />
+
       <div className={styles.logo}>
         <div className={styles.logoMark} />
         <span className={styles.logoText}>Dassh</span>
@@ -111,7 +113,7 @@ export function Sidebar() {
           </svg>
           All Hosts
           {hosts.length > 0 && (
-            <span className={styles.badge}>{hosts.length}</span>
+            <span className={styles.navBadge}>{hosts.length}</span>
           )}
         </button>
         <button
@@ -145,9 +147,10 @@ export function Sidebar() {
                     className={styles.sessionDot}
                     style={{
                       background: s.kind === "terminal" ? "var(--green)" : "var(--blue)",
+                      color: s.kind === "terminal" ? "var(--green)" : "var(--blue)",
                       boxShadow: s.kind === "terminal"
-                        ? "0 0 5px rgba(34,209,122,0.5)"
-                        : "0 0 5px rgba(91,138,246,0.5)",
+                        ? "0 0 6px rgba(52,211,153,0.6)"
+                        : "0 0 6px rgba(91,138,246,0.6)",
                     }}
                   />
                   <span className={styles.sessionKind}>

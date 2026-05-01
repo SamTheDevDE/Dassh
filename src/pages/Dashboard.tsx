@@ -12,12 +12,12 @@ import type { Host, HostInput } from "../types";
 import styles from "./Dashboard.module.css";
 
 const TAG_PALETTE = [
-  { bg: "rgba(91,138,246,0.13)",  color: "#5b8af6", border: "rgba(91,138,246,0.3)"  },
-  { bg: "rgba(45,216,114,0.13)",  color: "#2dd872", border: "rgba(45,216,114,0.3)"  },
-  { bg: "rgba(245,166,35,0.13)",  color: "#f5a623", border: "rgba(245,166,35,0.3)"  },
-  { bg: "rgba(180,90,200,0.13)",  color: "#b45ac8", border: "rgba(180,90,200,0.3)"  },
-  { bg: "rgba(80,188,210,0.13)",  color: "#50bcd2", border: "rgba(80,188,210,0.3)"  },
-  { bg: "rgba(240,120,80,0.13)",  color: "#f07850", border: "rgba(240,120,80,0.3)"  },
+  { bg: "rgba(129,140,248,0.14)", color: "#818cf8", border: "rgba(129,140,248,0.28)" },
+  { bg: "rgba(167,139,250,0.14)", color: "#a78bfa", border: "rgba(167,139,250,0.28)" },
+  { bg: "rgba(45,212,191,0.12)",  color: "#2dd4bf", border: "rgba(45,212,191,0.24)"  },
+  { bg: "rgba(251,113,133,0.12)", color: "#fb7185", border: "rgba(251,113,133,0.24)" },
+  { bg: "rgba(251,191,36,0.12)",  color: "#fbbf24", border: "rgba(251,191,36,0.24)"  },
+  { bg: "rgba(34,211,238,0.12)",  color: "#22d3ee", border: "rgba(34,211,238,0.24)"  },
 ];
 
 function tagPalette(tag: string) {
@@ -68,19 +68,13 @@ export function Dashboard() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [editingHost, setEditingHost] = useState<Host | null>(null);
   const [prefill, setPrefill] = useState<Partial<HostInput> | undefined>();
-
   const [deleteTarget, setDeleteTarget] = useState<Host | null>(null);
-
   const [connecting, setConnecting] = useState<string | null>(null);
-
   const [copiedId, setCopiedId] = useState<string | null>(null);
-
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number; host: Host } | null>(null);
-
   const [qcOpen, setQcOpen] = useState(false);
   const [qcInput, setQcInput] = useState("");
   const qcRef = useRef<HTMLInputElement>(null);
-
   const importRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -118,7 +112,6 @@ export function Dashboard() {
       }
       return true;
     });
-
     if (sortOrder === "name") {
       result = [...result].sort((a, b) => a.name.localeCompare(b.name));
     } else if (sortOrder === "lastConnected") {
@@ -218,7 +211,7 @@ export function Dashboard() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "dash-hosts.json";
+    a.download = "dassh-hosts.json";
     a.click();
     URL.revokeObjectURL(url);
     toast.success(`Exported ${hosts.length} host${hosts.length !== 1 ? "s" : ""}`);
@@ -313,13 +306,14 @@ export function Dashboard() {
     ];
   }
 
+  let cardIndex = 0;
+
   return (
     <div className={`page-fade ${styles.root}`}>
-      {/* ── Toolbar ─────────────────────────────────────────────── */}
       <div className={styles.toolbar}>
         <div className={styles.toolbarLeft}>
           <div className={styles.sortWrap}>
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: "var(--text-2)" }}>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: "var(--text-2)", flexShrink: 0 }}>
               <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/>
               <line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>
             </svg>
@@ -381,7 +375,6 @@ export function Dashboard() {
         </div>
       </div>
 
-      {/* ── Host list ─────────────────────────────────────────── */}
       <div className={styles.list}>
         {hosts.length === 0 ? (
           <EmptyState onAdd={() => { setEditingHost(null); setPrefill(undefined); setDrawerOpen(true); }} />
@@ -400,46 +393,47 @@ export function Dashboard() {
                   <span className={styles.groupCount}>{items.length}</span>
                 </div>
               )}
-              {items.map((host) => (
-                <HostCard
-                  key={host.id}
-                  host={host}
-                  connecting={connecting}
-                  copied={copiedId === host.id}
-                  isFav={favorites.includes(host.id)}
-                  lastTs={lastConnected[host.id]}
-                  onConnect={() => handleConnect(host)}
-                  onSftp={() => handleSftp(host)}
-                  onCopy={() => handleCopy(host)}
-                  onEdit={() => { setEditingHost(host); setPrefill(undefined); setDrawerOpen(true); }}
-                  onDelete={() => setDeleteTarget(host)}
-                  onStar={() => toggleFavorite(host.id)}
-                  onMenu={(e) => openContextMenu(e, host)}
-                />
-              ))}
+              {items.map((host) => {
+                const idx = cardIndex++;
+                return (
+                  <HostCard
+                    key={host.id}
+                    host={host}
+                    connecting={connecting}
+                    copied={copiedId === host.id}
+                    isFav={favorites.includes(host.id)}
+                    lastTs={lastConnected[host.id]}
+                    animIndex={idx}
+                    onConnect={() => handleConnect(host)}
+                    onSftp={() => handleSftp(host)}
+                    onCopy={() => handleCopy(host)}
+                    onEdit={() => { setEditingHost(host); setPrefill(undefined); setDrawerOpen(true); }}
+                    onDelete={() => setDeleteTarget(host)}
+                    onStar={() => toggleFavorite(host.id)}
+                    onMenu={(e) => openContextMenu(e, host)}
+                  />
+                );
+              })}
             </div>
           ))
         )}
       </div>
 
-      {/* ── Quick connect modal ──────────────────────────────── */}
       {qcOpen && (
         <div className={styles.qcBackdrop} onMouseDown={() => { setQcOpen(false); setQcInput(""); }}>
           <div className={styles.qcPanel} onMouseDown={(e) => e.stopPropagation()}>
             <div className={styles.qcTitle}>Quick connect</div>
-            <div style={{ position: "relative" }}>
-              <input
-                ref={qcRef}
-                className={styles.qcInput}
-                placeholder="user@hostname:port"
-                value={qcInput}
-                onChange={(e) => setQcInput(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") handleQuickConnect();
-                  if (e.key === "Escape") { setQcOpen(false); setQcInput(""); }
-                }}
-              />
-            </div>
+            <input
+              ref={qcRef}
+              className={styles.qcInput}
+              placeholder="user@hostname:port"
+              value={qcInput}
+              onChange={(e) => setQcInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") handleQuickConnect();
+                if (e.key === "Escape") { setQcOpen(false); setQcInput(""); }
+              }}
+            />
             {quickConnectHistory.length > 0 && (
               <div className={styles.qcHistory}>
                 {quickConnectHistory.slice(0, 5).map((addr) => (
@@ -470,7 +464,6 @@ export function Dashboard() {
         </div>
       )}
 
-      {/* ── Context menu ────────────────────────────────────── */}
       {contextMenu && (
         <ContextMenu
           x={contextMenu.x}
@@ -480,7 +473,6 @@ export function Dashboard() {
         />
       )}
 
-      {/* ── Drawer ──────────────────────────────────────────── */}
       <Drawer
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
@@ -499,7 +491,6 @@ export function Dashboard() {
         )}
       </Drawer>
 
-      {/* ── Delete confirmation ──────────────────────────────── */}
       <ConfirmModal
         open={!!deleteTarget}
         title="Remove host"
@@ -519,6 +510,7 @@ function HostCard({
   copied,
   isFav,
   lastTs,
+  animIndex,
   onConnect,
   onSftp,
   onCopy,
@@ -532,6 +524,7 @@ function HostCard({
   copied: boolean;
   isFav: boolean;
   lastTs?: number;
+  animIndex: number;
   onConnect: () => void;
   onSftp: () => void;
   onCopy: () => void;
@@ -545,9 +538,12 @@ function HostCard({
   const isConnectingSFTP = connecting === host.id + "-sftp";
 
   return (
-    <div className={styles.card} onContextMenu={onMenu}>
+    <div
+      className={styles.card}
+      style={{ animationDelay: `${Math.min(animIndex * 40, 320)}ms` }}
+      onContextMenu={onMenu}
+    >
       <div className={styles.cardBody}>
-        {/* Star */}
         <button
           className={`${styles.starBtn} ${isFav ? styles.starOn : ""}`}
           onClick={onStar}
@@ -558,7 +554,6 @@ function HostCard({
           </svg>
         </button>
 
-        {/* Info */}
         <div className={styles.cardInfo}>
           <div className={styles.nameRow}>
             <span className={styles.hostName}>{host.name}</span>
@@ -584,13 +579,12 @@ function HostCard({
           </div>
         </div>
 
-        {/* Actions */}
         <div className={styles.cardActions}>
           <button
             className="btn btn-primary btn-sm"
             onClick={onConnect}
             disabled={isBusy}
-            style={{ minWidth: 52 }}
+            style={{ minWidth: 54 }}
           >
             {isConnectingSSH ? <span className="spinner" /> : "SSH"}
           </button>
@@ -598,18 +592,14 @@ function HostCard({
             className="btn btn-ghost btn-sm"
             onClick={onSftp}
             disabled={isBusy}
-            style={{ minWidth: 52 }}
+            style={{ minWidth: 54 }}
           >
             {isConnectingSFTP ? <span className="spinner" /> : "SFTP"}
           </button>
           <div className={styles.cardSecondary}>
             <button className="btn btn-ghost btn-sm" onClick={onEdit}>Edit</button>
             <button className="btn btn-danger btn-sm" onClick={onDelete}>Del</button>
-            <button
-              className="btn-icon"
-              onClick={onMenu}
-              title="More options"
-            >
+            <button className="btn-icon" onClick={onMenu} title="More options">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
                 <circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/>
               </svg>
@@ -625,7 +615,7 @@ function EmptyState({ onAdd }: { onAdd: () => void }) {
   return (
     <div className={styles.emptyState}>
       <div className={styles.emptyIllo}>
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.25" style={{ color: "var(--accent)" }}>
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ color: "var(--indigo)" }}>
           <rect x="2" y="3" width="20" height="14" rx="2" />
           <path d="M8 21h8M12 17v4" />
           <path d="M8 10l2 2 4-4" strokeLinecap="round" strokeLinejoin="round" />
@@ -633,7 +623,7 @@ function EmptyState({ onAdd }: { onAdd: () => void }) {
       </div>
       <h3 className={styles.emptyTitle}>No hosts yet</h3>
       <p className={styles.emptySub}>
-        Add your first SSH host to get started. Your credentials are encrypted locally using Argon2id + ChaCha20-Poly1305.
+        Add your first SSH host to get started. Credentials are encrypted locally using Argon2id + ChaCha20-Poly1305.
       </p>
       <button className="btn btn-primary" onClick={onAdd}>
         + Add first host
