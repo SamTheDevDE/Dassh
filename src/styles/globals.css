@@ -1,35 +1,27 @@
-/* ─── Design tokens ──────────────────────────────────────────── */
 :root {
-  /* Surfaces — neutral charcoal, no blue tint */
-  --bg-0:    #0f0f11;   /* body chrome                        */
-  --bg-1:    #161619;   /* page background                    */
-  --bg-2:    #1e1e23;   /* card, panel                        */
-  --bg-3:    #27272d;   /* input bg, hover                    */
-  --bg-4:    #303038;   /* modal, dropdown, top layer         */
+  --bg-0:    #0f0f11;
+  --bg-1:    #161619;
+  --bg-2:    #1e1e23;
+  --bg-3:    #27272d;
+  --bg-4:    #303038;
 
-  /* Sidebar */
   --sidebar-bg: #111114;
 
-  /* Borders */
   --border:    rgba(255, 255, 255, 0.09);
   --border-hi: rgba(255, 255, 255, 0.16);
 
-  /* Text — zinc scale, no blue tint */
-  --text-0: #f0f0f2;   /* primary   */
-  --text-1: #909099;   /* secondary */
-  --text-2: #4c4c58;   /* muted     */
-  --text-3: #33333d;   /* disabled  */
+  --text-0: #f0f0f2;
+  --text-1: #909099;
+  --text-2: #4c4c58;
+  --text-3: #33333d;
 
-  /* Accent — white */
   --accent:         #ffffff;
   --accent-d:       rgba(255, 255, 255, 0.85);
   --accent-surface: rgba(255, 255, 255, 0.06);
   --accent-glow:    rgba(255, 255, 255, 0.09);
 
-  /* Blue — for SFTP indicators, non-accent uses */
   --blue:           #5b8af6;
 
-  /* Status */
   --green:          #22d17a;
   --green-surface:  rgba(34, 209, 122, 0.12);
   --red:            #f87171;
@@ -38,7 +30,6 @@
   --yellow:         #fbbf24;
   --yellow-surface: rgba(251, 191, 36, 0.12);
 
-  /* Legacy alias */
   --bg-surface: var(--bg-2);
 
   font-family: -apple-system, system-ui, "Segoe UI", sans-serif;
@@ -49,10 +40,8 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* ─── Reset ──────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* ─── Body ───────────────────────────────────────────────────── */
 body {
   background: var(--bg-0);
   color: var(--text-0);
@@ -62,13 +51,11 @@ body {
 
 #root { height: 100dvh; display: flex; flex-direction: column; }
 
-/* ─── Scrollbar ──────────────────────────────────────────────── */
 ::-webkit-scrollbar              { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track        { background: transparent; }
 ::-webkit-scrollbar-thumb        { background: rgba(255,255,255,0.1); border-radius: 10px; }
 ::-webkit-scrollbar-thumb:hover  { background: rgba(255,255,255,0.2); }
 
-/* ─── Animations ─────────────────────────────────────────────── */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(4px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -94,12 +81,10 @@ body {
 .pop-in         { animation: popIn        0.16s ease-out; }
 .slide-in-right { animation: slideInRight 0.16s ease-out; }
 
-/* ─── Typography ─────────────────────────────────────────────── */
 h1 { font-size: 1.1rem;  font-weight: 600; letter-spacing: -0.01em; }
 h2 { font-size: 0.92rem; font-weight: 600; }
 h3 { font-size: 0.84rem; font-weight: 600; }
 
-/* ─── Forms ──────────────────────────────────────────────────── */
 input, select, textarea {
   background: var(--bg-3);
   border: 1px solid var(--border-hi);
@@ -129,7 +114,6 @@ label {
 .field              { margin-bottom: 1rem; }
 .field:last-of-type { margin-bottom: 0; }
 
-/* ─── Buttons ────────────────────────────────────────────────── */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -204,7 +188,6 @@ label {
 }
 .btn-icon:hover { background: var(--bg-3); color: var(--text-0); }
 
-/* ─── Spinner ────────────────────────────────────────────────── */
 .spinner {
   width: 11px;
   height: 11px;
@@ -215,7 +198,6 @@ label {
   display: inline-block;
 }
 
-/* ─── Panels ─────────────────────────────────────────────────── */
 .panel {
   background: var(--bg-2);
   border: 1px solid var(--border);
@@ -223,10 +205,8 @@ label {
   padding: 1.1rem;
 }
 
-/* ─── Dividers ───────────────────────────────────────────────── */
 hr { border: none; border-top: 1px solid var(--border); }
 
-/* ─── Badges ─────────────────────────────────────────────────── */
 .badge {
   display: inline-block;
   font-size: 0.67rem;
@@ -241,7 +221,6 @@ hr { border: none; border-top: 1px solid var(--border); }
   white-space: nowrap;
 }
 
-/* ─── Tag pills ──────────────────────────────────────────────── */
 .tag-pill {
   display: inline-block;
   font-size: 0.67rem;
@@ -255,7 +234,6 @@ hr { border: none; border-top: 1px solid var(--border); }
   white-space: nowrap;
 }
 
-/* ─── Error / status messages ────────────────────────────────── */
 .error-msg {
   background: var(--red-surface);
   border: 1px solid var(--red-border);
@@ -267,7 +245,6 @@ hr { border: none; border-top: 1px solid var(--border); }
   line-height: 1.5;
 }
 
-/* ─── Utilities ──────────────────────────────────────────────── */
 .flex            { display: flex; }
 .flex-col        { flex-direction: column; }
 .gap-1           { gap: 0.4rem; }

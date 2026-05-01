@@ -23,12 +23,10 @@ export function SftpBrowser() {
   const [entries, setEntries] = useState<FileEntry[]>([]);
   const [loading, setLoading] = useState(false);
 
-  // New folder flow
   const [mkdirOpen, setMkdirOpen] = useState(false);
   const [folderName, setFolderName] = useState("");
   const folderInputRef = useRef<HTMLInputElement>(null);
 
-  // Delete confirm flow
   const [deleteTarget, setDeleteTarget] = useState<FileEntry | null>(null);
 
   const session = sessions.find((s) => s.id === sessionId);
@@ -53,7 +51,6 @@ export function SftpBrowser() {
 
   useEffect(() => { loadDir("/"); }, [sessionId]);
 
-  // Focus folder input when modal opens
   useEffect(() => {
     if (mkdirOpen) setTimeout(() => folderInputRef.current?.focus(), 50);
   }, [mkdirOpen]);
@@ -101,7 +98,6 @@ export function SftpBrowser() {
 
   return (
     <div className="page-fade" style={{ display: "flex", flexDirection: "column", height: "100%" }}>
-      {/* Header */}
       <div
         style={{
           display: "flex",
@@ -152,7 +148,6 @@ export function SftpBrowser() {
         </div>
       </div>
 
-      {/* Breadcrumb */}
       <div
         style={{
           display: "flex",
@@ -200,7 +195,6 @@ export function SftpBrowser() {
         )}
       </div>
 
-      {/* File list */}
       <div style={{ flex: 1, overflowY: "auto" }}>
         {loading ? (
           <div style={{ padding: "3rem", textAlign: "center", color: "var(--text-2)", fontSize: "0.85rem" }}>
@@ -291,7 +285,6 @@ export function SftpBrowser() {
         )}
       </div>
 
-      {/* New folder modal */}
       {mkdirOpen && (
         <div
           style={{
@@ -340,7 +333,6 @@ export function SftpBrowser() {
         </div>
       )}
 
-      {/* Delete confirmation */}
       <ConfirmModal
         open={!!deleteTarget}
         title={`Delete ${deleteTarget?.is_dir ? "folder" : "file"}`}

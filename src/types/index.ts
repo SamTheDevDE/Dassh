@@ -1,5 +1,3 @@
-// Mirrors the Rust data models exactly.
-
 export type AuthType = "password" | "key" | "agent";
 
 export interface Host {

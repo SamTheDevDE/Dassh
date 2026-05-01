@@ -75,13 +75,11 @@ export function Sidebar() {
 
   return (
     <aside className={styles.sidebar}>
-      {/* Logo */}
       <div className={styles.logo}>
         <div className={styles.logoMark} />
         <span className={styles.logoText}>Dash</span>
       </div>
 
-      {/* Search — only on home */}
       {isHome && (
         <div className={styles.searchWrap}>
           <div className={styles.searchInputWrap}>
@@ -102,7 +100,6 @@ export function Sidebar() {
         </div>
       )}
 
-      {/* Primary nav */}
       <nav className={styles.nav}>
         <button
           className={`${styles.navItem} ${isAllHosts ? styles.active : ""}`}
@@ -128,7 +125,6 @@ export function Sidebar() {
         </button>
       </nav>
 
-      {/* Sessions */}
       {sessions.length > 0 && (
         <>
           <div className={styles.divider} />
@@ -174,7 +170,6 @@ export function Sidebar() {
 
       <div className={styles.spacer} />
 
-      {/* Bottom: settings + lock */}
       <div className={styles.bottom}>
         <NavLink
           to="/settings"

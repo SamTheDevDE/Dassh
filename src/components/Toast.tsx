@@ -6,8 +6,6 @@ import {
   type ReactNode,
 } from "react";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-
 type Kind = "success" | "error" | "info";
 
 interface ToastItem {
@@ -22,15 +20,11 @@ interface ToastApi {
   info: (msg: string) => void;
 }
 
-// ─── Context ──────────────────────────────────────────────────────────────────
-
 const Ctx = createContext<ToastApi>({ success: () => { }, error: () => { }, info: () => { } });
 
 export function useToast() {
   return useContext(Ctx);
 }
-
-// ─── Provider ─────────────────────────────────────────────────────────────────
 
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<ToastItem[]>([]);
@@ -48,8 +42,6 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     </Ctx.Provider>
   );
 }
-
-// ─── Container + individual toast ────────────────────────────────────────────
 
 const KIND: Record<Kind, { icon: string; iconBg: string; iconColor: string; border: string }> = {
   success: { icon: "✓", iconBg: "rgba(45,216,114,0.15)", iconColor: "#2dd872", border: "rgba(45,216,114,0.35)" },

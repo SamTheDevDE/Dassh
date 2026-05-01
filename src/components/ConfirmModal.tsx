@@ -42,7 +42,6 @@ export function ConfirmModal({
         justifyContent: "center",
       }}
     >
-      {/* Backdrop */}
       <div
         style={{
           position: "absolute",
@@ -51,8 +50,6 @@ export function ConfirmModal({
         }}
         onClick={onCancel}
       />
-
-      {/* Dialog */}
       <div
         className="pop-in"
         style={{

@@ -9,7 +9,6 @@ interface DrawerProps {
 }
 
 export function Drawer({ open, onClose, title, children, width = 420 }: DrawerProps) {
-  // Close on Esc
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
@@ -21,7 +20,6 @@ export function Drawer({ open, onClose, title, children, width = 420 }: DrawerPr
 
   return (
     <>
-      {/* Backdrop */}
       <div
         style={{
           position: "fixed",
@@ -34,8 +32,6 @@ export function Drawer({ open, onClose, title, children, width = 420 }: DrawerPr
         }}
         onClick={onClose}
       />
-
-      {/* Panel */}
       <div
         style={{
           position: "fixed",
@@ -54,7 +50,6 @@ export function Drawer({ open, onClose, title, children, width = 420 }: DrawerPr
           overflow: "hidden",
         }}
       >
-        {/* Header */}
         <div
           style={{
             display: "flex",
@@ -76,8 +71,6 @@ export function Drawer({ open, onClose, title, children, width = 420 }: DrawerPr
             ×
           </button>
         </div>
-
-        {/* Scrollable content */}
         <div style={{ flex: 1, overflowY: "auto", padding: "1.4rem" }}>
           {children}
         </div>

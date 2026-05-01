@@ -1,4 +1,3 @@
-/* ─── Root ───────────────────────────────────────────────────── */
 .root {
   display: flex;
   flex-direction: column;
@@ -6,7 +5,6 @@
   background: var(--bg-1);
 }
 
-/* ─── Toolbar ────────────────────────────────────────────────── */
 .toolbar {
   display: flex;
   align-items: center;
@@ -72,14 +70,12 @@
   margin-left: 0.2rem;
 }
 
-/* ─── List area ──────────────────────────────────────────────── */
 .list {
   flex: 1;
   overflow-y: auto;
   padding: 1rem 1.1rem 1.5rem;
 }
 
-/* ─── Group header ───────────────────────────────────────────── */
 .groupHeader {
   display: flex;
   align-items: center;
@@ -100,7 +96,6 @@
   text-align: center;
 }
 
-/* ─── Host card ──────────────────────────────────────────────── */
 .card {
   background: var(--bg-2);
   border: 1px solid var(--border);
@@ -123,7 +118,6 @@
   padding: 0.85rem 1rem;
 }
 
-/* Star button */
 .starBtn {
   flex-shrink: 0;
   background: transparent;
@@ -214,7 +208,6 @@
   align-items: center;
 }
 
-/* ─── Quick connect ──────────────────────────────────────────── */
 .qcBackdrop {
   position: fixed;
   inset: 0;
@@ -290,7 +283,6 @@
   border-top: 1px solid var(--border);
 }
 
-/* ─── Empty / no-results states ──────────────────────────────── */
 .emptyState {
   display: flex;
   flex-direction: column;

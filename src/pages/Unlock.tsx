@@ -30,7 +30,6 @@ export function Unlock() {
       else await createVault(password);
       navigate("/");
     } catch {
-      // error set in store
     } finally {
       setLoading(false);
     }
@@ -50,7 +49,6 @@ export function Unlock() {
       }}
     >
       <div style={{ width: 360, padding: "0 1rem" }}>
-        {/* Branding */}
         <div style={{ display: "flex", alignItems: "center", gap: "0.7rem", marginBottom: "2rem" }}>
           <div
             style={{
@@ -80,7 +78,6 @@ export function Unlock() {
           </div>
         </div>
 
-        {/* Card */}
         <div
           style={{
             background: "var(--bg-2)",

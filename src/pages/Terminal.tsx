@@ -71,7 +71,6 @@ export function TerminalPage() {
     termRef.current = term;
     fitRef.current = fit;
 
-    // Register listener, then replay any buffered output (race condition fix)
     const unlistenOutput = listen<number[]>(`ssh-output-${sessionId}`, (event) => {
       term.write(new Uint8Array(event.payload));
     });
@@ -105,7 +104,6 @@ export function TerminalPage() {
     };
   }, [sessionId, terminalFontSize, terminalFontFamily, terminalLineHeight, terminalCursorBlink]);
 
-  // Ctrl+Shift+W to disconnect
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === "W") {
@@ -151,7 +149,6 @@ export function TerminalPage() {
         background: "#0f0f12",
       }}
     >
-      {/* Header */}
       <div
         style={{
           display: "flex",
@@ -165,7 +162,6 @@ export function TerminalPage() {
           zIndex: 1,
         }}
       >
-        {/* Left: status + session info */}
         <div style={{ display: "flex", alignItems: "center", gap: "0.65rem", minWidth: 0 }}>
           <span
             style={{
@@ -205,8 +201,6 @@ export function TerminalPage() {
             </span>
           )}
         </div>
-
-        {/* Right: shortcut hint + disconnect */}
         <div style={{ display: "flex", alignItems: "center", gap: "0.55rem", flexShrink: 0 }}>
           <kbd
             style={{
@@ -227,13 +221,11 @@ export function TerminalPage() {
         </div>
       </div>
 
-      {/* Terminal canvas */}
       <div
         ref={containerRef}
         style={{ flex: 1, overflow: "hidden", padding: "2px 4px" }}
       />
 
-      {/* Session-ended overlay */}
       {sessionClosed && (
         <div
           className="pop-in"

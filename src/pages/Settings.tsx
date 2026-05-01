@@ -46,7 +46,6 @@ export function Settings() {
 
   return (
     <div className={`page-fade ${styles.root}`}>
-      {/* Left nav */}
       <nav className={styles.sidenav}>
         <div className={styles.sidenavLabel}>Settings</div>
         {NAV.map((item) => (
@@ -61,7 +60,6 @@ export function Settings() {
         ))}
       </nav>
 
-      {/* Content */}
       <div className={styles.content}>
         {section === "terminal" && <TerminalSection />}
         {section === "keys" && <KeysSection />}
@@ -70,8 +68,6 @@ export function Settings() {
     </div>
   );
 }
-
-// ─── Terminal section ─────────────────────────────────────────────────────────
 
 function TerminalSection() {
   const {
@@ -93,7 +89,6 @@ function TerminalSection() {
       </div>
 
       <div className={styles.settingGroup}>
-        {/* Font size */}
         <div className={styles.settingRow}>
           <div>
             <div className={styles.settingLabel}>Font size</div>
@@ -113,7 +108,6 @@ function TerminalSection() {
           </div>
         </div>
 
-        {/* Font family */}
         <div className={styles.settingRow}>
           <div>
             <div className={styles.settingLabel}>Font family</div>
@@ -131,7 +125,6 @@ function TerminalSection() {
           </select>
         </div>
 
-        {/* Line height */}
         <div className={styles.settingRow}>
           <div>
             <div className={styles.settingLabel}>Line height</div>
@@ -151,7 +144,6 @@ function TerminalSection() {
           </div>
         </div>
 
-        {/* Cursor blink */}
         <div className={styles.settingRow}>
           <div>
             <div className={styles.settingLabel}>Cursor blink</div>
@@ -167,7 +159,6 @@ function TerminalSection() {
         </div>
       </div>
 
-      {/* Preview */}
       <div
         style={{
           background: "#0f0f12",
@@ -207,8 +198,6 @@ function TerminalSection() {
     </div>
   );
 }
-
-// ─── SSH Keys section ─────────────────────────────────────────────────────────
 
 function KeysSection() {
   const { keys, generateKey, importKey, deleteKey } = useVaultStore();
@@ -282,7 +271,6 @@ function KeysSection() {
         Manage the SSH keys stored in your vault. Keys can be used for host authentication.
       </div>
 
-      {/* Key list */}
       {keys.length === 0 ? (
         <div className={styles.emptyKeys}>No SSH keys in vault. Generate or import one below.</div>
       ) : (
@@ -322,7 +310,6 @@ function KeysSection() {
         </div>
       )}
 
-      {/* Generate key */}
       <div className={styles.inlineForm}>
         <div className={styles.inlineFormHeader} onClick={() => setGenOpen((v) => !v)}>
           <span className={styles.inlineFormTitle}>Generate new key</span>
@@ -361,7 +348,6 @@ function KeysSection() {
         )}
       </div>
 
-      {/* Import key */}
       <div className={styles.inlineForm}>
         <div className={styles.inlineFormHeader} onClick={() => setImportOpen((v) => !v)}>
           <span className={styles.inlineFormTitle}>Import existing key</span>
@@ -424,8 +410,6 @@ function KeysSection() {
     </div>
   );
 }
-
-// ─── About section ────────────────────────────────────────────────────────────
 
 function AboutSection() {
   return (

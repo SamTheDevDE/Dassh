@@ -1,4 +1,3 @@
-/* ─── Root ───────────────────────────────────────────────────── */
 .root {
   display: flex;
   height: 100%;
@@ -6,7 +5,6 @@
   overflow: hidden;
 }
 
-/* ─── Left nav ───────────────────────────────────────────────── */
 .sidenav {
   width: 176px;
   min-width: 176px;
@@ -58,7 +56,6 @@
   border-color: var(--border-hi);
 }
 
-/* ─── Content area ───────────────────────────────────────────── */
 .content {
   flex: 1;
   overflow-y: auto;
@@ -83,7 +80,6 @@
   line-height: 1.55;
 }
 
-/* ─── Setting rows ───────────────────────────────────────────── */
 .settingGroup {
   border: 1px solid var(--border);
   border-radius: 10px;
@@ -123,7 +119,6 @@
   flex-shrink: 0;
 }
 
-/* ─── Slider ─────────────────────────────────────────────────── */
 .slider {
   width: 110px;
   accent-color: var(--accent);
@@ -138,7 +133,6 @@
   font-family: "Cascadia Code", "JetBrains Mono", ui-monospace, monospace;
 }
 
-/* ─── Select ─────────────────────────────────────────────────── */
 .select {
   width: auto !important;
   min-width: 160px;
@@ -148,7 +142,6 @@
   border-color: var(--border-hi) !important;
 }
 
-/* ─── Toggle ─────────────────────────────────────────────────── */
 .toggle {
   position: relative;
   width: 38px;
@@ -182,7 +175,6 @@
   background: #fff;
 }
 
-/* ─── SSH Keys ───────────────────────────────────────────────── */
 .keyList {
   border: 1px solid var(--border);
   border-radius: 10px;
@@ -261,7 +253,6 @@
   margin-bottom: 1.5rem;
 }
 
-/* ─── Inline forms ───────────────────────────────────────────── */
 .inlineForm {
   border: 1px solid var(--border);
   border-radius: 10px;
@@ -301,7 +292,6 @@
   padding-top: 0.25rem;
 }
 
-/* ─── About ──────────────────────────────────────────────────── */
 .aboutCard {
   border: 1px solid var(--border);
   border-radius: 10px;

@@ -11,8 +11,6 @@ import { useVaultStore } from "../store/vault";
 import type { Host, HostInput } from "../types";
 import styles from "./Dashboard.module.css";
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
 const TAG_PALETTE = [
   { bg: "rgba(91,138,246,0.13)",  color: "#5b8af6", border: "rgba(91,138,246,0.3)"  },
   { bg: "rgba(45,216,114,0.13)",  color: "#2dd872", border: "rgba(45,216,114,0.3)"  },
@@ -54,8 +52,6 @@ function parseQuickConnect(s: string): { hostname: string; username: string; por
   return { username: m[1] || "root", hostname: m[2], port: m[3] ? Number(m[3]) : 22 };
 }
 
-// ─── Dashboard ────────────────────────────────────────────────────────────────
-
 export function Dashboard() {
   const hosts = useVaultStore((s) => s.hosts);
   const addHost = useVaultStore((s) => s.addHost);
@@ -69,32 +65,24 @@ export function Dashboard() {
   const q = searchParams.get("q")?.toLowerCase().trim() ?? "";
   const view = searchParams.get("view");
 
-  // Drawer state
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [editingHost, setEditingHost] = useState<Host | null>(null);
   const [prefill, setPrefill] = useState<Partial<HostInput> | undefined>();
 
-  // Delete modal
   const [deleteTarget, setDeleteTarget] = useState<Host | null>(null);
 
-  // Connecting
   const [connecting, setConnecting] = useState<string | null>(null);
 
-  // Copy feedback
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
-  // Context menu
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number; host: Host } | null>(null);
 
-  // Quick connect
   const [qcOpen, setQcOpen] = useState(false);
   const [qcInput, setQcInput] = useState("");
   const qcRef = useRef<HTMLInputElement>(null);
 
-  // Export/import
   const importRef = useRef<HTMLInputElement>(null);
 
-  // ── Keyboard shortcuts ────────────────────────────────────────
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if ((e.ctrlKey || e.metaKey) && e.key === "n") {
@@ -117,7 +105,6 @@ export function Dashboard() {
     return () => window.removeEventListener("keydown", onKey);
   }, [qcOpen]);
 
-  // ── Filtering + sorting ───────────────────────────────────────
   const processed = useMemo(() => {
     let result = hosts.filter((h) => {
       if (view === "starred" && !favorites.includes(h.id)) return false;
@@ -168,7 +155,6 @@ export function Dashboard() {
     return result;
   }, [processed, q, sortOrder, view]);
 
-  // ── Action handlers ───────────────────────────────────────────
   async function handleConnect(host: Host) {
     setConnecting(host.id);
     setLastConnected(host.id);
@@ -527,8 +513,6 @@ export function Dashboard() {
   );
 }
 
-// ─── HostCard ─────────────────────────────────────────────────────────────────
-
 function HostCard({
   host,
   connecting,
@@ -636,8 +620,6 @@ function HostCard({
     </div>
   );
 }
-
-// ─── Empty state ──────────────────────────────────────────────────────────────
 
 function EmptyState({ onAdd }: { onAdd: () => void }) {
   return (
