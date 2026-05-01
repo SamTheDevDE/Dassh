@@ -1,0 +1,88 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+}
+
+.menu {
+  position: fixed;
+  z-index: 1001;
+  background: var(--bg-4);
+  border: 1px solid var(--border-hi);
+  border-radius: 9px;
+  padding: 0.3rem;
+  min-width: 180px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 2px 6px rgba(0, 0, 0, 0.3);
+  animation: menuIn 0.1s ease-out;
+}
+
+@keyframes menuIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  width: 100%;
+  padding: 0.38rem 0.65rem;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: var(--text-1);
+  font-size: 0.82rem;
+  font-family: inherit;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.08s, color 0.08s;
+}
+
+.item:hover {
+  background: var(--bg-3);
+  color: var(--text-0);
+}
+
+.item.danger {
+  color: var(--red);
+}
+
+.item.danger:hover {
+  background: var(--red-surface);
+  color: var(--red);
+}
+
+.itemIcon {
+  flex-shrink: 0;
+  color: var(--text-2);
+  display: flex;
+  align-items: center;
+}
+
+.item.danger .itemIcon {
+  color: var(--red);
+}
+
+.itemLabel {
+  flex: 1;
+}
+
+.itemShortcut {
+  font-size: 0.72rem;
+  color: var(--text-2);
+  margin-left: auto;
+  padding-left: 1rem;
+}
+
+.separator {
+  height: 1px;
+  background: var(--border);
+  margin: 0.25rem 0.3rem;
+}

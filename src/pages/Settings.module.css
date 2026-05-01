@@ -1,0 +1,335 @@
+/* ─── Root ───────────────────────────────────────────────────── */
+.root {
+  display: flex;
+  height: 100%;
+  background: var(--bg-1);
+  overflow: hidden;
+}
+
+/* ─── Left nav ───────────────────────────────────────────────── */
+.sidenav {
+  width: 176px;
+  min-width: 176px;
+  border-right: 1px solid var(--border);
+  background: var(--bg-2);
+  display: flex;
+  flex-direction: column;
+  padding: 1.1rem 0.5rem;
+  gap: 2px;
+  overflow-y: auto;
+}
+
+.sidenavLabel {
+  font-size: 0.67rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-2);
+  padding: 0 0.65rem 0.6rem;
+  flex-shrink: 0;
+}
+
+.sidenavItem {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.42rem 0.65rem;
+  border-radius: 7px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-1);
+  font-size: 0.83rem;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  font-family: inherit;
+  transition: background 0.1s, color 0.1s;
+  flex-shrink: 0;
+}
+
+.sidenavItem:hover {
+  background: var(--bg-3);
+  color: var(--text-0);
+}
+
+.sidenavItem.active {
+  background: var(--accent-surface);
+  color: var(--text-0);
+  border-color: var(--border-hi);
+}
+
+/* ─── Content area ───────────────────────────────────────────── */
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 2rem 2.5rem;
+}
+
+.section {
+  max-width: 540px;
+}
+
+.sectionTitle {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-0);
+  margin-bottom: 0.3rem;
+}
+
+.sectionSub {
+  font-size: 0.8rem;
+  color: var(--text-2);
+  margin-bottom: 1.75rem;
+  line-height: 1.55;
+}
+
+/* ─── Setting rows ───────────────────────────────────────────── */
+.settingGroup {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+.settingRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 0.9rem 1.1rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-2);
+}
+
+.settingRow:last-child {
+  border-bottom: none;
+}
+
+.settingLabel {
+  font-size: 0.84rem;
+  color: var(--text-0);
+}
+
+.settingHint {
+  font-size: 0.76rem;
+  color: var(--text-2);
+  margin-top: 0.15rem;
+}
+
+.control {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-shrink: 0;
+}
+
+/* ─── Slider ─────────────────────────────────────────────────── */
+.slider {
+  width: 110px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.sliderVal {
+  font-size: 0.78rem;
+  color: var(--text-1);
+  min-width: 28px;
+  text-align: right;
+  font-family: "Cascadia Code", "JetBrains Mono", ui-monospace, monospace;
+}
+
+/* ─── Select ─────────────────────────────────────────────────── */
+.select {
+  width: auto !important;
+  min-width: 160px;
+  padding: 0.3rem 0.6rem !important;
+  font-size: 0.8rem !important;
+  background: var(--bg-3) !important;
+  border-color: var(--border-hi) !important;
+}
+
+/* ─── Toggle ─────────────────────────────────────────────────── */
+.toggle {
+  position: relative;
+  width: 38px;
+  height: 22px;
+  border-radius: 11px;
+  border: 1px solid var(--border-hi);
+  background: var(--bg-4);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  flex-shrink: 0;
+}
+
+.toggle.on {
+  background: var(--accent);
+  border-color: var(--accent-d);
+}
+
+.toggleThumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--text-2);
+  transition: left 0.15s, background 0.15s;
+}
+
+.toggle.on .toggleThumb {
+  left: 18px;
+  background: #fff;
+}
+
+/* ─── SSH Keys ───────────────────────────────────────────────── */
+.keyList {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+.keyRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-2);
+}
+
+.keyRow:last-child {
+  border-bottom: none;
+}
+
+.keyIcon {
+  width: 32px;
+  height: 32px;
+  background: var(--accent-surface);
+  border: 1px solid var(--border-hi);
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--accent);
+}
+
+.keyInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.keyName {
+  font-size: 0.84rem;
+  color: var(--text-0);
+  font-weight: 500;
+}
+
+.keyMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.2rem;
+  flex-wrap: wrap;
+}
+
+.keyFp {
+  font-size: 0.73rem;
+  color: var(--text-2);
+  font-family: "Cascadia Code", "JetBrains Mono", ui-monospace, monospace;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 260px;
+}
+
+.keyActions {
+  display: flex;
+  gap: 0.35rem;
+  flex-shrink: 0;
+}
+
+.emptyKeys {
+  padding: 2.5rem;
+  text-align: center;
+  color: var(--text-2);
+  font-size: 0.83rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin-bottom: 1.5rem;
+}
+
+/* ─── Inline forms ───────────────────────────────────────────── */
+.inlineForm {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.inlineFormHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background: var(--bg-2);
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  user-select: none;
+}
+
+.inlineFormTitle {
+  font-size: 0.84rem;
+  font-weight: 500;
+  color: var(--text-0);
+}
+
+.inlineFormBody {
+  padding: 1rem;
+  background: var(--bg-1);
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding-top: 0.25rem;
+}
+
+/* ─── About ──────────────────────────────────────────────────── */
+.aboutCard {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 1.25rem;
+}
+
+.aboutRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.8rem 1.1rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-2);
+  font-size: 0.84rem;
+}
+
+.aboutRow:last-child {
+  border-bottom: none;
+}
+
+.aboutKey {
+  color: var(--text-1);
+  flex-shrink: 0;
+}
+
+.aboutValue {
+  color: var(--text-0);
+  text-align: right;
+}
