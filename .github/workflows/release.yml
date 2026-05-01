@@ -87,9 +87,9 @@ jobs:
 
         with:
           tagName: ${{ github.ref_name }}
-          releaseName: "Dash ${{ github.ref_name }}"
+          releaseName: "Dassh ${{ github.ref_name }}"
           releaseBody: |
-            ## Dash ${{ github.ref_name }}
+            ## Dassh ${{ github.ref_name }}
 
             ### Downloads
             | Platform | File |

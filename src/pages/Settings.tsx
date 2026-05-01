@@ -415,7 +415,7 @@ function AboutSection() {
   return (
     <div className={styles.section}>
       <div className={styles.sectionTitle}>About</div>
-      <div className={styles.sectionSub}>Dash SSH Session Manager</div>
+      <div className={styles.sectionSub}>Dassh SSH Session Manager</div>
 
       <div className={styles.aboutCard}>
         {[

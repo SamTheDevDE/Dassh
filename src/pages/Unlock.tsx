@@ -70,7 +70,7 @@ export function Unlock() {
                 lineHeight: 1.2,
               }}
             >
-              Dash
+              Dassh
             </div>
             <div style={{ fontSize: "0.75rem", color: "var(--text-2)", marginTop: "0.1rem" }}>
               SSH Session Manager

@@ -1,12 +1,12 @@
 [package]
-name = "dash"
+name = "dassh"
 version = "0.1.0"
-description = "Dash — minimal SSH session manager"
+description = "Dassh — minimal SSH session manager"
 authors = []
 edition = "2021"
 
 [lib]
-name = "dash_lib"
+name = "dassh_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
 [build-dependencies]

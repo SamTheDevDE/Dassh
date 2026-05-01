@@ -52,5 +52,5 @@ pub fn run() {
             Ok(())
         })
         .run(tauri::generate_context!())
-        .expect("error while running Dash");
+        .expect("error while running Dassh");
 }

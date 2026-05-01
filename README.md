@@ -1,4 +1,4 @@
-# Dash
+# Dassh
 
 [![CI](https://github.com/YOUR_USERNAME/dash/actions/workflows/ci.yml/badge.svg)](https://github.com/YOUR_USERNAME/dash/actions/workflows/ci.yml)
 [![Release](https://github.com/YOUR_USERNAME/dash/actions/workflows/release.yml/badge.svg)](https://github.com/YOUR_USERNAME/dash/releases)
@@ -92,7 +92,7 @@ Output binaries are placed in `src-tauri/target/release/bundle/`.
 
 ## Release Process
 
-Dash uses GitHub Actions for fully automated releases.
+Dassh uses GitHub Actions for fully automated releases.
 
 ### Tagging a release
 

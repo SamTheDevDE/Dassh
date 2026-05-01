@@ -77,7 +77,7 @@ export function Sidebar() {
     <aside className={styles.sidebar}>
       <div className={styles.logo}>
         <div className={styles.logoMark} />
-        <span className={styles.logoText}>Dash</span>
+        <span className={styles.logoText}>Dassh</span>
       </div>
 
       {isHome && (

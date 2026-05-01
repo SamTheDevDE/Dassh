@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "Dash",
+  "productName": "Dassh",
   "version": "0.1.0",
-  "identifier": "com.dash.app",
+  "identifier": "com.dassh.app",
   "build": {
     "frontendDist": "../dist",
     "devUrl": "http://localhost:1420",
@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "Dash",
+        "title": "Dassh",
         "width": 1200,
         "height": 800,
         "minWidth": 800,
@@ -38,7 +38,7 @@
       "icons/icon.ico"
     ],
     "category": "Utility",
-    "shortDescription": "A fast, secure personal dashboard",
-    "longDescription": "Dash is a cross-platform desktop dashboard built with Tauri, React, and TypeScript."
+    "shortDescription": "A fast, secure SSH session manager",
+    "longDescription": "Dassh is a cross-platform SSH session manager built with Tauri, React, and TypeScript."
   }
 }
