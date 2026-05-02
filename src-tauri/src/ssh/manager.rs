@@ -12,6 +12,7 @@ pub enum SessionInput {
 }
 
 pub struct TerminalSession {
+    #[allow(dead_code)]
     pub host_id: String,
     pub input_tx: mpsc::Sender<SessionInput>,
     /// All SSH output since the session opened; used to replay data that
@@ -20,6 +21,7 @@ pub struct TerminalSession {
 }
 
 pub struct SftpSession {
+    #[allow(dead_code)]
     pub host_id: String,
     pub sftp: russh_sftp::client::SftpSession,
 }
@@ -160,6 +162,7 @@ impl SessionManager {
         Ok(())
     }
 
+    #[allow(dead_code)]
     pub fn terminal_ids(&self) -> Vec<String> {
         self.terminals.keys().cloned().collect()
     }

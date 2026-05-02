@@ -7,6 +7,7 @@ mod vault;
 
 use commands::{sftp_cmds::*, ssh_cmds::*, vault_cmds::*};
 use state::AppState;
+#[cfg(debug_assertions)]
 use tauri::Manager;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -44,9 +45,9 @@ pub fn run() {
             sftp_mkdir,
             sftp_delete,
         ])
-        .setup(|app| {
+        .setup(|_app| {
             #[cfg(debug_assertions)]
-            app.get_webview_window("main")
+            _app.get_webview_window("main")
                 .unwrap()
                 .open_devtools();
             Ok(())
