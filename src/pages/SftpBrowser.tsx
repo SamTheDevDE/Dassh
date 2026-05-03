@@ -1,8 +1,10 @@
+import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ConfirmModal } from "../components/ConfirmModal";
+import { ContextMenu, type ContextMenuItem } from "../components/ContextMenu";
 import { useToast } from "../components/Toast";
-import { sftpDelete, sftpListDir, sftpMkdir } from "../lib/commands";
+import { sftpDelete, sftpListDir, sftpMkdir, sftpUpload } from "../lib/commands";
 import { useSessionsStore } from "../store/sessions";
 import type { FileEntry } from "../types";
 
@@ -10,6 +12,12 @@ function formatSize(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 ** 2) return `${(bytes / 1024).toFixed(1)} KB`;
   return `${(bytes / 1024 ** 2).toFixed(1)} MB`;
+}
+
+function basenameFromPath(path: string): string {
+  const normalized = path.replace(/\\/g, "/");
+  const parts = normalized.split("/").filter(Boolean);
+  return parts[parts.length - 1] ?? "";
 }
 
 export function SftpBrowser() {
@@ -28,6 +36,8 @@ export function SftpBrowser() {
   const folderInputRef = useRef<HTMLInputElement>(null);
 
   const [deleteTarget, setDeleteTarget] = useState<FileEntry | null>(null);
+  const [dropActive, setDropActive] = useState(false);
+  const [contextMenu, setContextMenu] = useState<{ x: number; y: number; target: FileEntry | null } | null>(null);
 
   const session = sessions.find((s) => s.id === sessionId);
 
@@ -54,6 +64,50 @@ export function SftpBrowser() {
   useEffect(() => {
     if (mkdirOpen) setTimeout(() => folderInputRef.current?.focus(), 50);
   }, [mkdirOpen]);
+
+  useEffect(() => {
+    const unlisten = getCurrentWebviewWindow().onDragDropEvent(async (event) => {
+      if (!sessionId) return;
+
+      if (event.payload.type === "enter") {
+        setDropActive(true);
+        return;
+      }
+
+      if (event.payload.type === "leave") {
+        setDropActive(false);
+        return;
+      }
+
+      if (event.payload.type === "drop") {
+        setDropActive(false);
+        const paths = event.payload.paths ?? [];
+        if (paths.length === 0) return;
+
+        let successCount = 0;
+        for (const localPath of paths) {
+          const name = basenameFromPath(localPath);
+          if (!name) continue;
+          const remotePath = `${path}/${name}`.replace(/\\/g, "/").replace("//", "/");
+          try {
+            await sftpUpload(sessionId, localPath, remotePath);
+            successCount += 1;
+          } catch (e) {
+            toast.error(`Upload failed for ${name}: ${String(e)}`);
+          }
+        }
+
+        if (successCount > 0) {
+          toast.success(`Uploaded ${successCount} file${successCount === 1 ? "" : "s"}`);
+          loadDir(path);
+        }
+      }
+    });
+
+    return () => {
+      unlisten.then((fn) => fn()).catch(() => undefined);
+    };
+  }, [sessionId, path]);
 
   function goUp() {
     const parts = path.split("/").filter(Boolean);
@@ -95,6 +149,50 @@ export function SftpBrowser() {
   }
 
   const breadcrumbs = path.split("/").filter(Boolean);
+
+  function openContextMenu(e: React.MouseEvent, target: FileEntry | null) {
+    e.preventDefault();
+    e.stopPropagation();
+    setContextMenu({ x: e.clientX, y: e.clientY, target });
+  }
+
+  function contextItems(target: FileEntry | null): ContextMenuItem[] {
+    const items: ContextMenuItem[] = [];
+
+    if (target?.is_dir) {
+      items.push({
+        label: "Open",
+        icon: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>,
+        onClick: () => loadDir(target.path),
+      });
+      items.push({ type: "separator" });
+    }
+
+    items.push(
+      {
+        label: "New folder",
+        icon: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>,
+        onClick: () => { setFolderName(""); setMkdirOpen(true); },
+      },
+      {
+        label: "Refresh",
+        icon: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.13-3.36L23 10M1 14l5.37 4.36A9 9 0 0 0 20.49 15"/></svg>,
+        onClick: () => loadDir(path),
+      }
+    );
+
+    if (target) {
+      items.push({ type: "separator" });
+      items.push({
+        label: "Delete",
+        danger: true,
+        icon: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>,
+        onClick: () => setDeleteTarget(target),
+      });
+    }
+
+    return items;
+  }
 
   return (
     <div className="page-fade" style={{ display: "flex", flexDirection: "column", height: "100%" }}>
@@ -209,7 +307,30 @@ export function SftpBrowser() {
         )}
       </div>
 
-      <div style={{ flex: 1, overflowY: "auto", background: "var(--bg-1)" }}>
+      <div
+        style={{ flex: 1, overflowY: "auto", background: "var(--bg-1)", position: "relative" }}
+        onContextMenu={(e) => openContextMenu(e, null)}
+      >
+        {dropActive && (
+          <div
+            style={{
+              position: "absolute",
+              inset: 12,
+              zIndex: 10,
+              border: "2px dashed var(--blue)",
+              borderRadius: 12,
+              background: "rgba(91,138,246,0.12)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "var(--text-0)",
+              fontSize: "0.9rem",
+              pointerEvents: "none",
+            }}
+          >
+            Drop files to upload into {path}
+          </div>
+        )}
         {loading ? (
           <div style={{ padding: "3rem", textAlign: "center", color: "var(--text-2)", fontSize: "0.85rem", display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
             <span className="spinner" />
@@ -253,6 +374,7 @@ export function SftpBrowser() {
                   onMouseEnter={(e) => (e.currentTarget.style.background = "var(--bg-3)")}
                   onMouseLeave={(e) => (e.currentTarget.style.background = "")}
                   onDoubleClick={() => entry.is_dir && loadDir(entry.path)}
+                  onContextMenu={(e) => openContextMenu(e, entry)}
                 >
                   <td style={{ padding: "0.6rem 1rem" }}>
                     <span
@@ -368,6 +490,15 @@ export function SftpBrowser() {
         onConfirm={confirmDelete}
         onCancel={() => setDeleteTarget(null)}
       />
+
+      {contextMenu && (
+        <ContextMenu
+          x={contextMenu.x}
+          y={contextMenu.y}
+          items={contextItems(contextMenu.target)}
+          onClose={() => setContextMenu(null)}
+        />
+      )}
     </div>
   );
 }
