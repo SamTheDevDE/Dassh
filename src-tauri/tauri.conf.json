@@ -29,6 +29,7 @@
   },
   "bundle": {
     "active": true,
+    "createUpdaterArtifacts": true,
     "targets": "all",
     "icon": [
       "icons/32x32.png",
@@ -40,5 +41,16 @@
     "category": "Utility",
     "shortDescription": "A fast, secure SSH session manager",
     "longDescription": "Dassh is a cross-platform SSH session manager built with Tauri, React, and TypeScript."
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDJDMjk0QThFODM5RUVBN0UKUldSKzZwNkRqa29wTEF0bzVtaVVXWnQxTm1ja0dSa1J4SjNqNlUyblhycGh1ZkNiT0xFUEkxUjkK",
+      "endpoints": [
+        "https://github.com/SamTheDevDE/Dash/releases/latest/download/latest.json"
+      ],
+      "windows": {
+        "installMode": "passive"
+      }
+    }
   }
 }

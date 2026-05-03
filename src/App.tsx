@@ -1,4 +1,5 @@
-import { useEffect } from "react";
+import { check } from "@tauri-apps/plugin-updater";
+import { useEffect, useRef } from "react";
 import {
   BrowserRouter,
   Navigate,
@@ -7,7 +8,7 @@ import {
   useNavigate,
 } from "react-router-dom";
 import { Layout } from "./components/Layout";
-import { ToastProvider } from "./components/Toast";
+import { ToastProvider, useToast } from "./components/Toast";
 import { Dashboard } from "./pages/Dashboard";
 import { Settings } from "./pages/Settings";
 import { SftpBrowser } from "./pages/SftpBrowser";
@@ -29,9 +30,38 @@ function Guard({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
+function StartupUpdateCheck() {
+  const toast = useToast();
+  const hasChecked = useRef(false);
+
+  useEffect(() => {
+    if (hasChecked.current) return;
+    hasChecked.current = true;
+
+    let cancelled = false;
+    (async () => {
+      try {
+        const update = await check();
+        if (!cancelled && update) {
+          toast.info(`Update v${update.version} is available. Open Settings > About to install.`);
+        }
+      } catch {
+        // Keep startup quiet if updater is not available in this environment.
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  return null;
+}
+
 export default function App() {
   return (
     <ToastProvider>
+      <StartupUpdateCheck />
       <BrowserRouter>
         <Routes>
           <Route path="/unlock" element={<Unlock />} />

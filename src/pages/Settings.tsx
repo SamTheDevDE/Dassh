@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { getVersion } from "@tauri-apps/api/app";
+import { check } from "@tauri-apps/plugin-updater";
+import { useEffect, useState } from "react";
 import { ConfirmModal } from "../components/ConfirmModal";
 import { useToast } from "../components/Toast";
 import { FONT_FAMILIES, useSettingsStore, type FontFamily } from "../store/settings";
@@ -407,12 +409,50 @@ function KeysSection() {
 }
 
 function AboutSection() {
+  const toast = useToast();
+  const [currentVersion, setCurrentVersion] = useState("...");
+  const [checkingUpdate, setCheckingUpdate] = useState(false);
+
+  useEffect(() => {
+    getVersion()
+      .then((v) => setCurrentVersion(v))
+      .catch(() => setCurrentVersion("unknown"));
+  }, []);
+
+  async function handleCheckForUpdates() {
+    setCheckingUpdate(true);
+    try {
+      const update = await check();
+      if (!update) {
+        toast.success("You are on the latest version.");
+        return;
+      }
+
+      toast.info(`Update v${update.version} found. Downloading...`);
+      await update.downloadAndInstall();
+      toast.success(`Update v${update.version} installed. Restart Dassh to apply it.`);
+    } catch (e) {
+      toast.error(`Update failed: ${String(e)}`);
+    } finally {
+      setCheckingUpdate(false);
+    }
+  }
+
   return (
     <div className={styles.section}>
       <div className={styles.sectionTitle}>About</div>
       <div className={styles.sectionSub}>Dassh SSH Session Manager</div>
 
-      <div className={styles.versionBadge}>v0.1.0</div>
+      <div className={styles.versionRow}>
+        <div className={styles.versionBadge}>v{currentVersion}</div>
+        <button
+          className="btn btn-primary btn-sm"
+          onClick={handleCheckForUpdates}
+          disabled={checkingUpdate}
+        >
+          {checkingUpdate ? <span className="spinner" /> : "Check for updates"}
+        </button>
+      </div>
 
       <div className={styles.aboutCard}>
         {[

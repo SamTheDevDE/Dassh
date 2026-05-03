@@ -334,3 +334,15 @@
   letter-spacing: 0.04em;
   margin-bottom: 1.5rem;
 }
+
+.versionRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  margin-bottom: 1.5rem;
+}
+
+.versionRow .versionBadge {
+  margin-bottom: 0;
+}
