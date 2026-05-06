@@ -46,7 +46,8 @@ try {
     console.log("No staged changes found; skipping commit.");
   }
 
-  run(`git tag -a ${JSON.stringify(tag)} -m ${JSON.stringify(tag)}`);
+  // Create an annotated tag but explicitly avoid GPG-signing (some environments auto-sign tags)
+  run(`git tag -a ${JSON.stringify(tag)} --no-sign -m ${JSON.stringify(tag)}`);
 
   console.log("\nRelease tag created successfully.");
   console.log(`Next: git push && git push origin ${tag}`);
