@@ -12,12 +12,12 @@ import type { Host, HostInput } from "../types";
 import styles from "./Dashboard.module.css";
 
 const TAG_PALETTE = [
-  { bg: "rgba(129,140,248,0.14)", color: "#818cf8", border: "rgba(129,140,248,0.28)" },
-  { bg: "rgba(167,139,250,0.14)", color: "#a78bfa", border: "rgba(167,139,250,0.28)" },
-  { bg: "rgba(45,212,191,0.12)",  color: "#2dd4bf", border: "rgba(45,212,191,0.24)"  },
-  { bg: "rgba(251,113,133,0.12)", color: "#fb7185", border: "rgba(251,113,133,0.24)" },
-  { bg: "rgba(251,191,36,0.12)",  color: "#fbbf24", border: "rgba(251,191,36,0.24)"  },
-  { bg: "rgba(34,211,238,0.12)",  color: "#22d3ee", border: "rgba(34,211,238,0.24)"  },
+  { bg: "rgba(255,255,255,0.04)", color: "#cfcfcf", border: "rgba(255,255,255,0.12)" },
+  { bg: "rgba(255,255,255,0.06)", color: "#bfbfbf", border: "rgba(255,255,255,0.14)" },
+  { bg: "rgba(255,255,255,0.08)", color: "#a0a0a0", border: "rgba(255,255,255,0.16)" },
+  { bg: "rgba(255,255,255,0.06)", color: "#b0b0b0", border: "rgba(255,255,255,0.14)" },
+  { bg: "rgba(255,255,255,0.05)", color: "#bfbfbf", border: "rgba(255,255,255,0.12)" },
+  { bg: "rgba(255,255,255,0.07)", color: "#a8a8a8", border: "rgba(255,255,255,0.15)" },
 ];
 
 function tagPalette(tag: string) {
@@ -266,41 +266,41 @@ export function Dashboard() {
     return [
       {
         label: "Connect SSH",
-        icon: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>,
+        icon: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="4 17 10 11 4 5" /><line x1="12" y1="19" x2="20" y2="19" /></svg>,
         onClick: () => !isBusy && handleConnect(host),
       },
       {
         label: "Connect SFTP",
-        icon: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>,
+        icon: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z" /><polyline points="13 2 13 9 20 9" /></svg>,
         onClick: () => !isBusy && handleSftp(host),
       },
       { type: "separator" },
       {
         label: isFav ? "Unstar" : "Star",
-        icon: <svg width="12" height="12" viewBox="0 0 24 24" fill={isFav ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>,
+        icon: <svg width="12" height="12" viewBox="0 0 24 24" fill={isFav ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg>,
         onClick: () => toggleFavorite(host.id),
       },
       {
         label: "Copy address",
-        icon: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>,
+        icon: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="9" y="9" width="13" height="13" rx="2" /><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" /></svg>,
         onClick: () => handleCopy(host),
       },
       {
         label: "Duplicate",
-        icon: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>,
+        icon: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="9" y="9" width="13" height="13" rx="2" /><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" /></svg>,
         onClick: () => handleDuplicate(host),
       },
       { type: "separator" },
       {
         label: "Edit",
-        icon: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>,
+        icon: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>,
         onClick: () => { setEditingHost(host); setPrefill(undefined); setDrawerOpen(true); },
       },
       { type: "separator" },
       {
         label: "Delete",
         danger: true,
-        icon: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>,
+        icon: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6" /><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" /><path d="M10 11v6M14 11v6" /><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" /></svg>,
         onClick: () => setDeleteTarget(host),
       },
     ];
@@ -314,8 +314,8 @@ export function Dashboard() {
         <div className={styles.toolbarLeft}>
           <div className={styles.sortWrap}>
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: "var(--text-2)", flexShrink: 0 }}>
-              <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/>
-              <line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>
+              <line x1="8" y1="6" x2="21" y2="6" /><line x1="8" y1="12" x2="21" y2="12" /><line x1="8" y1="18" x2="21" y2="18" />
+              <line x1="3" y1="6" x2="3.01" y2="6" /><line x1="3" y1="12" x2="3.01" y2="12" /><line x1="3" y1="18" x2="3.01" y2="18" />
             </svg>
             <select
               className={styles.sortSelect}
@@ -332,17 +332,17 @@ export function Dashboard() {
         <div className={styles.toolbarRight}>
           <button className="btn btn-ghost btn-sm" onClick={handleExport} title="Export hosts as JSON">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-              <polyline points="17 8 12 3 7 8"/>
-              <line x1="12" y1="3" x2="12" y2="15"/>
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="17 8 12 3 7 8" />
+              <line x1="12" y1="3" x2="12" y2="15" />
             </svg>
             Export
           </button>
           <button className="btn btn-ghost btn-sm" onClick={() => importRef.current?.click()} title="Import hosts from JSON">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-              <polyline points="7 10 12 15 17 10"/>
-              <line x1="12" y1="15" x2="12" y2="3"/>
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
             </svg>
             Import
           </button>
@@ -353,8 +353,8 @@ export function Dashboard() {
             title="Quick connect (Ctrl+K)"
           >
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <polyline points="13 17 18 12 13 7"/>
-              <polyline points="6 17 11 12 6 7"/>
+              <polyline points="13 17 18 12 13 7" />
+              <polyline points="6 17 11 12 6 7" />
             </svg>
             Quick connect
             <kbd className={styles.kbd}>⌃K</kbd>
@@ -443,7 +443,7 @@ export function Dashboard() {
                     onClick={() => { setQcInput(addr); qcRef.current?.focus(); }}
                   >
                     <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <polyline points="12 8 12 12 14 14"/><circle cx="12" cy="12" r="10"/>
+                      <polyline points="12 8 12 12 14 14" /><circle cx="12" cy="12" r="10" />
                     </svg>
                     {addr}
                   </button>
@@ -601,7 +601,7 @@ function HostCard({
             <button className="btn btn-danger btn-sm" onClick={onDelete}>Del</button>
             <button className="btn-icon" onClick={onMenu} title="More options">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                <circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/>
+                <circle cx="12" cy="5" r="1.5" /><circle cx="12" cy="12" r="1.5" /><circle cx="12" cy="19" r="1.5" />
               </svg>
             </button>
           </div>
