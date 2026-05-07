@@ -64,18 +64,6 @@ jobs:
       - name: Install Node dependencies
         run: npm ci
 
-      - name: Validate updater signing key secret
-        shell: bash
-        run: |
-          if [[ -z "${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}" ]]; then
-            echo "Missing secret: TAURI_SIGNING_PRIVATE_KEY"
-            exit 1
-          fi
-          if [[ "${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}" != untrusted\ comment:* ]]; then
-            echo "TAURI_SIGNING_PRIVATE_KEY must be the full minisign private key content, not a path or other value."
-            exit 1
-          fi
-
       # ------------------------------------------------------------------ #
       # Build & publish release                                              #
       # ------------------------------------------------------------------ #
@@ -83,7 +71,7 @@ jobs:
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          # TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
 
           # ── Windows code signing (uncomment when ready) ────────────────
           # Provision via: Settings → Secrets → Actions
