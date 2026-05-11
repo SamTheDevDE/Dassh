@@ -8,6 +8,17 @@ use serde::Deserialize;
 use tauri::State;
 use uuid::Uuid;
 
+const MIN_PASSWORD_LEN: usize = 8;
+
+fn validate_password(password: &str) -> Result<()> {
+    if password.len() < MIN_PASSWORD_LEN {
+        return Err(AppError::Vault(format!(
+            "Master password must be at least {MIN_PASSWORD_LEN} characters"
+        )));
+    }
+    Ok(())
+}
+
 #[derive(Debug, Deserialize)]
 pub struct HostInput {
     pub name: String,
@@ -28,6 +39,7 @@ pub fn vault_exists() -> bool {
 
 #[tauri::command]
 pub async fn vault_create(password: String, state: State<'_, AppState>) -> Result<()> {
+    validate_password(&password)?;
     let vault = crate::vault::Vault::create(&password)?;
     *state.vault.lock().await = Some(vault);
     Ok(())
@@ -35,6 +47,7 @@ pub async fn vault_create(password: String, state: State<'_, AppState>) -> Resul
 
 #[tauri::command]
 pub async fn vault_unlock(password: String, state: State<'_, AppState>) -> Result<()> {
+    validate_password(&password)?;
     let vault = crate::vault::Vault::unlock(&password)?;
     *state.vault.lock().await = Some(vault);
     Ok(())

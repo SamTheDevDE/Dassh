@@ -9,6 +9,11 @@ use tauri::State;
 use tokio::{fs::File, io::{AsyncReadExt, AsyncWriteExt}, task::spawn_blocking};
 use uuid::Uuid;
 
+/// 50 MiB — files larger than this will not be opened in the system editor.
+const MAX_EDITOR_FILE_SIZE: u64 = 50 * 1024 * 1024;
+/// 1 GiB — files larger than this cannot be saved-as downloaded in one shot.
+const MAX_DOWNLOAD_FILE_SIZE: u64 = 1024 * 1024 * 1024;
+
 #[derive(Debug, Serialize)]
 pub struct FileEntry {
     pub name: String,
@@ -131,9 +136,16 @@ pub async fn sftp_download(
 
     let mut buf = Vec::new();
     remote_file
+        .take(MAX_DOWNLOAD_FILE_SIZE + 1)
         .read_to_end(&mut buf)
         .await
         .map_err(|e| AppError::Sftp(e.to_string()))?;
+    if buf.len() as u64 > MAX_DOWNLOAD_FILE_SIZE {
+        return Err(AppError::Sftp(format!(
+            "File exceeds download limit ({} GiB)",
+            MAX_DOWNLOAD_FILE_SIZE / (1024 * 1024 * 1024)
+        )));
+    }
 
     tokio::fs::write(&local_path, &buf).await?;
     Ok(())
@@ -238,9 +250,16 @@ pub async fn sftp_open_in_editor(
             .map_err(|e| AppError::Sftp(e.to_string()))?;
         let mut buf = Vec::new();
         remote_file
+            .take(MAX_EDITOR_FILE_SIZE + 1)
             .read_to_end(&mut buf)
             .await
             .map_err(|e| AppError::Sftp(e.to_string()))?;
+        if buf.len() as u64 > MAX_EDITOR_FILE_SIZE {
+            return Err(AppError::Sftp(format!(
+                "File too large to open in editor (max {} MiB)",
+                MAX_EDITOR_FILE_SIZE / (1024 * 1024)
+            )));
+        }
         buf
     };
 
@@ -262,7 +281,18 @@ pub async fn sftp_open_in_editor(
 
 #[tauri::command]
 pub async fn sftp_cleanup_temp_file(local_path: String) -> Result<()> {
-    match tokio::fs::remove_file(&local_path).await {
+    let path = std::path::PathBuf::from(&local_path);
+    let temp_dir = std::env::temp_dir();
+    // Canonicalize both paths to resolve symlinks and prevent traversal
+    let canonical = tokio::fs::canonicalize(&path).await.unwrap_or(path.clone());
+    let canonical_temp = std::fs::canonicalize(&temp_dir).unwrap_or(temp_dir);
+    if !canonical.starts_with(&canonical_temp) {
+        return Err(AppError::Io(std::io::Error::new(
+            std::io::ErrorKind::PermissionDenied,
+            "Refusing to delete file outside temp directory",
+        )));
+    }
+    match tokio::fs::remove_file(&canonical).await {
         Ok(()) => Ok(()),
         Err(e) if e.kind() == std::io::ErrorKind::NotFound => Ok(()),
         Err(e) => Err(AppError::Io(e)),

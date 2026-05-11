@@ -5,6 +5,9 @@ use std::sync::{Arc, Mutex};
 use tauri::{AppHandle, Emitter};
 use tokio::sync::mpsc;
 
+/// Maximum bytes retained in the replay buffer per terminal session.
+const MAX_OUTPUT_BUF: usize = 2 * 1024 * 1024; // 2 MiB
+
 pub enum SessionInput {
     Data(Vec<u8>),
     Resize { cols: u32, rows: u32 },
@@ -83,6 +86,10 @@ impl SessionManager {
                                 let bytes = data.to_vec();
                                 if let Ok(mut b) = buf_ref.lock() {
                                     b.extend_from_slice(&bytes);
+                                    if b.len() > MAX_OUTPUT_BUF {
+                                        let drop = b.len() - MAX_OUTPUT_BUF;
+                                        b.drain(..drop);
+                                    }
                                 }
                                 app.emit(&format!("ssh-output-{sid}"), bytes).ok();
                             }
@@ -91,6 +98,10 @@ impl SessionManager {
                                 let bytes = data.to_vec();
                                 if let Ok(mut b) = buf_ref.lock() {
                                     b.extend_from_slice(&bytes);
+                                    if b.len() > MAX_OUTPUT_BUF {
+                                        let drop = b.len() - MAX_OUTPUT_BUF;
+                                        b.drain(..drop);
+                                    }
                                 }
                                 app.emit(&format!("ssh-output-{sid}"), bytes).ok();
                             }
