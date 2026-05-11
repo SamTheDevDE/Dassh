@@ -11,15 +11,7 @@
 }
 
 .aurora {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 100px;
-  background: radial-gradient(ellipse at 50% -10%, var(--indigo-surface) 0%, transparent 65%);
-  animation: auroraDrift 8s ease-in-out infinite alternate;
-  pointer-events: none;
-  z-index: 0;
+  display: none;
 }
 
 .logo {
@@ -35,10 +27,9 @@
 .logoMark {
   width: 28px;
   height: 28px;
-  background: linear-gradient(135deg, var(--accent) 30%, var(--indigo) 100%);
   border-radius: 8px;
   flex-shrink: 0;
-  box-shadow: 0 0 18px var(--indigo-glow), 0 2px 8px rgba(0, 0, 0, 0.4);
+  object-fit: contain;
 }
 
 .logoText {

@@ -70,7 +70,7 @@ export function ConfirmModal({
           <div
             style={{
               height: 3,
-              background: "linear-gradient(90deg, var(--red) 0%, rgba(248,113,113,0.3) 60%, transparent 100%)",
+              background: "#ffffff",
             }}
           />
         )}

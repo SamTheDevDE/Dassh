@@ -8,6 +8,8 @@
   "permissions": [
     "core:default",
     "shell:allow-open",
-    "updater:default"
+    "updater:default",
+    "dialog:allow-save",
+    "dialog:allow-open"
   ]
 }

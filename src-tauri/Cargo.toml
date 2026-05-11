@@ -13,27 +13,29 @@ crate-type = ["staticlib", "cdylib", "rlib"]
 tauri-build = { version = "2", features = [] }
 
 [dependencies]
-tauri          = { version = "2", features = [] }
+tauri = { version = "2", features = [] }
 tauri-plugin-shell = "2"
 tauri-plugin-updater = "2"
-serde          = { version = "1", features = ["derive"] }
-serde_json     = "1"
-tokio          = { version = "1", features = ["full"] }
-russh          = "0.44"
-russh-keys     = "0.44"
-russh-sftp     = "2"
+tauri-plugin-dialog = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1", features = ["full"] }
+russh = "0.44"
+russh-keys = "0.44"
+russh-sftp = "2"
 chacha20poly1305 = "0.10"
-argon2         = { version = "0.5", features = ["std"] }
-uuid           = { version = "1", features = ["v4"] }
-base64         = "0.22"
-dirs           = "5"
-rand           = "0.8"
-thiserror      = "1"
-async-trait    = "0.1"
+argon2 = { version = "0.5", features = ["std"] }
+uuid = { version = "1", features = ["v4"] }
+base64 = "0.22"
+dirs = "5"
+rand = "0.8"
+open = "5"
+thiserror = "1"
+async-trait = "0.1"
 
 [profile.release]
-panic         = "abort"
+panic = "abort"
 codegen-units = 1
-lto           = true
-opt-level     = "s"
-strip         = true
+lto = true
+opt-level = "s"
+strip = true

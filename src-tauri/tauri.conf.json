@@ -1,7 +1,7 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "Dassh",
-  "version": "0.1.0",
+  "version": "0.1.20",
   "identifier": "com.dassh.app",
   "build": {
     "frontendDist": "../dist",
@@ -44,7 +44,7 @@
   },
   "plugins": {
     "updater": {
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDJDMjk0QThFODM5RUVBN0UKUldSKzZwNkRqa29wTEF0bzVtaVVXWnQxTm1ja0dSa1J4SjNqNlUyblhycGh1ZkNiT0xFUEkxUjkK",
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDc2MDU4OUNEQzAxRkI4NjUKUldSbHVCL0F6WWtGZG9tYTJUckExTVdvT1ltbTJhYUVSN2pYN3JjQTAvR0xMdHE4aTArY1VnOXMK",
       "endpoints": [
         "https://github.com/SamTheDevDE/Dash/releases/latest/download/latest.json"
       ],

@@ -50,47 +50,19 @@ export function Unlock() {
       }}
     >
       <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          pointerEvents: "none",
-        }}
-      >
-        <div
-          style={{
-            position: "absolute",
-            top: "-10%",
-            left: "-5%",
-            width: "50%",
-            height: "60%",
-            background: "radial-gradient(ellipse, rgba(129,140,248,0.10) 0%, transparent 65%)",
-          }}
-        />
-        <div
-          style={{
-            position: "absolute",
-            bottom: "-15%",
-            right: "-5%",
-            width: "50%",
-            height: "60%",
-            background: "radial-gradient(ellipse, rgba(167,139,250,0.07) 0%, transparent 65%)",
-          }}
-        />
-      </div>
-
-      <div
         className="scale-in"
         style={{ width: 380, padding: "0 1rem", position: "relative", zIndex: 1 }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "2.2rem" }}>
-          <div
+          <img
+            src="/icon.png"
+            alt="Dassh"
             style={{
               width: 36,
               height: 36,
-              background: "linear-gradient(135deg, #ffffff 30%, #818cf8 100%)",
               borderRadius: 10,
               flexShrink: 0,
-              boxShadow: "0 0 28px rgba(129,140,248,0.4), 0 4px 16px rgba(0,0,0,0.4)",
+              objectFit: "contain",
             }}
           />
           <div>

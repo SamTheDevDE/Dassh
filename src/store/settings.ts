@@ -22,6 +22,7 @@ interface SettingsStore {
   lastConnected: Record<string, number>;
   sortOrder: SortOrder;
   quickConnectHistory: string[];
+  themeId: string;
   setTerminalFontSize: (v: number) => void;
   setTerminalFontFamily: (v: FontFamily) => void;
   setTerminalLineHeight: (v: number) => void;
@@ -30,6 +31,7 @@ interface SettingsStore {
   setLastConnected: (id: string) => void;
   setSortOrder: (o: SortOrder) => void;
   pushQuickConnectHistory: (addr: string) => void;
+  setThemeId: (id: string) => void;
 }
 
 export const useSettingsStore = create<SettingsStore>()(
@@ -43,6 +45,7 @@ export const useSettingsStore = create<SettingsStore>()(
       lastConnected: {},
       sortOrder: "name",
       quickConnectHistory: [],
+      themeId: "dark-grey",
       setTerminalFontSize: (v) => set({ terminalFontSize: v }),
       setTerminalFontFamily: (v) => set({ terminalFontFamily: v }),
       setTerminalLineHeight: (v) => set({ terminalLineHeight: v }),
@@ -58,6 +61,7 @@ export const useSettingsStore = create<SettingsStore>()(
         const hist = get().quickConnectHistory.filter((a) => a !== addr);
         set({ quickConnectHistory: [addr, ...hist].slice(0, 10) });
       },
+      setThemeId: (id) => set({ themeId: id }),
     }),
     { name: "dash-settings" }
   )

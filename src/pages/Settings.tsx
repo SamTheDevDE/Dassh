@@ -3,12 +3,13 @@ import { check } from "@tauri-apps/plugin-updater";
 import { useEffect, useState } from "react";
 import { ConfirmModal } from "../components/ConfirmModal";
 import { useToast } from "../components/Toast";
+import { THEMES } from "../lib/themes";
 import { FONT_FAMILIES, useSettingsStore, type FontFamily } from "../store/settings";
 import { useVaultStore } from "../store/vault";
 import type { SshKeyInfo } from "../types";
 import styles from "./Settings.module.css";
 
-type Section = "terminal" | "keys" | "about";
+type Section = "terminal" | "keys" | "appearance" | "about";
 
 const NAV: { id: Section; label: string; icon: React.ReactNode }[] = [
   {
@@ -27,6 +28,17 @@ const NAV: { id: Section; label: string; icon: React.ReactNode }[] = [
     icon: (
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
         <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4" />
+      </svg>
+    ),
+  },
+  {
+    id: "appearance",
+    label: "Appearance",
+    icon: (
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+        <circle cx="12" cy="12" r="10" />
+        <path d="M12 2a10 10 0 0 1 0 20" />
+        <path d="M2 12h20" />
       </svg>
     ),
   },
@@ -65,9 +77,52 @@ export function Settings() {
       <div className={styles.content}>
         {section === "terminal" && <TerminalSection />}
         {section === "keys" && <KeysSection />}
+        {section === "appearance" && <AppearanceSection />}
         {section === "about" && <AboutSection />}
       </div>
     </div>
+  );
+}
+
+function AppearanceSection() {
+  const themeId = useSettingsStore((s) => s.themeId);
+  const setThemeId = useSettingsStore((s) => s.setThemeId);
+
+  return (
+    <section>
+      <h2 className={styles.sectionTitle}>Theme</h2>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: "10px" }}>
+        {THEMES.map((theme) => {
+          const active = themeId === theme.id;
+          return (
+            <button
+              key={theme.id}
+              onClick={() => setThemeId(theme.id)}
+              style={{
+                background: theme.vars["--bg-1"] ?? "var(--bg-1)",
+                border: `2px solid ${active ? "var(--accent)" : "var(--border)"}`,
+                borderRadius: 8,
+                padding: "12px 14px",
+                cursor: "pointer",
+                textAlign: "left",
+                color: theme.vars["--text-0"] ?? "var(--text-0)",
+                transition: "border-color 0.15s",
+              }}
+            >
+              <div style={{ display: "flex", gap: 6, marginBottom: 8 }}>
+                {["--bg-3", "--bg-4", "--bg-5"].map((v) => (
+                  <span
+                    key={v}
+                    style={{ width: 16, height: 16, borderRadius: 4, background: theme.vars[v] ?? "#333" }}
+                  />
+                ))}
+              </div>
+              <div style={{ fontSize: 12, fontWeight: 500 }}>{theme.label}</div>
+            </button>
+          );
+        })}
+      </div>
+    </section>
   );
 }
 

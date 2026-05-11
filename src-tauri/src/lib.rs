@@ -14,6 +14,7 @@ use tauri::Manager;
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())
+        .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
         .manage(AppState::new())
         .invoke_handler(tauri::generate_handler![
@@ -45,6 +46,8 @@ pub fn run() {
             sftp_upload,
             sftp_mkdir,
             sftp_delete,
+            sftp_rename,
+            sftp_open_in_editor,
         ])
         .setup(|_app| {
             #[cfg(debug_assertions)]

@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { NavLink, useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import { useVaultStore } from "../store/vault";
 import { useSessionsStore } from "../store/sessions";
+import { useVaultStore } from "../store/vault";
 import type { ActiveSession } from "../types";
 import styles from "./Sidebar.module.css";
 
@@ -67,8 +67,8 @@ export function Sidebar() {
   }
 
   async function handleCloseSession(s: ActiveSession) {
-    if (s.kind === "terminal") await closeTerminal(s.id).catch(() => {});
-    else await closeSftp(s.id).catch(() => {});
+    if (s.kind === "terminal") await closeTerminal(s.id).catch(() => { });
+    else await closeSftp(s.id).catch(() => { });
     const sessionPath = s.kind === "terminal" ? `/terminal/${s.id}` : `/sftp/${s.id}`;
     if (location.pathname === sessionPath) navigate("/");
   }
@@ -78,7 +78,7 @@ export function Sidebar() {
       <div className={styles.aurora} />
 
       <div className={styles.logo}>
-        <div className={styles.logoMark} />
+        <img src="/icon.png" alt="Dassh" className={styles.logoMark} />
         <span className={styles.logoText}>Dassh</span>
       </div>
 

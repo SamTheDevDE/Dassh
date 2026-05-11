@@ -9,11 +9,13 @@ import {
 } from "react-router-dom";
 import { Layout } from "./components/Layout";
 import { ToastProvider, useToast } from "./components/Toast";
+import { THEMES, applyTheme } from "./lib/themes";
 import { Dashboard } from "./pages/Dashboard";
 import { Settings } from "./pages/Settings";
 import { SftpBrowser } from "./pages/SftpBrowser";
 import { TerminalPage } from "./pages/Terminal";
 import { Unlock } from "./pages/Unlock";
+import { useSettingsStore } from "./store/settings";
 import { useVaultStore } from "./store/vault";
 
 function Guard({ children }: { children: React.ReactNode }) {
@@ -59,6 +61,13 @@ function StartupUpdateCheck() {
 }
 
 export default function App() {
+  const themeId = useSettingsStore((s) => s.themeId);
+
+  useEffect(() => {
+    const theme = THEMES.find((t) => t.id === themeId) ?? THEMES[0];
+    applyTheme(theme);
+  }, [themeId]);
+
   return (
     <ToastProvider>
       <StartupUpdateCheck />

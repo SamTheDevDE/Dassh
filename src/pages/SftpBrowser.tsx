@@ -1,10 +1,11 @@
 import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
+import { save } from "@tauri-apps/plugin-dialog";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ConfirmModal } from "../components/ConfirmModal";
 import { ContextMenu, type ContextMenuItem } from "../components/ContextMenu";
 import { useToast } from "../components/Toast";
-import { sftpDelete, sftpListDir, sftpMkdir, sftpUpload } from "../lib/commands";
+import { sftpDelete, sftpDownload, sftpListDir, sftpMkdir, sftpOpenInEditor, sftpRename, sftpUpload } from "../lib/commands";
 import { useSessionsStore } from "../store/sessions";
 import type { FileEntry } from "../types";
 
@@ -35,15 +36,22 @@ export function SftpBrowser() {
   const [folderName, setFolderName] = useState("");
   const folderInputRef = useRef<HTMLInputElement>(null);
 
+  const [selectedEntry, setSelectedEntry] = useState<FileEntry | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<FileEntry | null>(null);
   const [dropActive, setDropActive] = useState(false);
+  const [dropTargetPath, setDropTargetPath] = useState<string | null>(null);
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number; target: FileEntry | null } | null>(null);
+
+  const [renameTarget, setRenameTarget] = useState<FileEntry | null>(null);
+  const [renameName, setRenameName] = useState("");
+  const renameInputRef = useRef<HTMLInputElement>(null);
 
   const session = sessions.find((s) => s.id === sessionId);
 
   async function loadDir(p: string) {
     if (!sessionId) return;
     setLoading(true);
+    setSelectedEntry(null);
     try {
       const result = await sftpListDir(sessionId, p);
       const sorted = [...result].sort((a, b) => {
@@ -61,9 +69,40 @@ export function SftpBrowser() {
 
   useEffect(() => { loadDir("/"); }, [sessionId]);
 
+  const handleRowClick = (entry: FileEntry) => {
+    setSelectedEntry(entry);
+  };
+
+  const handleRowDoubleClick = async (entry: FileEntry) => {
+    if (entry.is_dir) {
+      loadDir(entry.path);
+    } else {
+      try {
+        await sftpOpenInEditor(sessionId!, entry.path);
+      } catch (e) {
+        toast.error(String(e));
+      }
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (!selectedEntry) return;
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleRowDoubleClick(selectedEntry);
+    } else if (e.key === "Delete") {
+      e.preventDefault();
+      setDeleteTarget(selectedEntry);
+    }
+  };
+
   useEffect(() => {
     if (mkdirOpen) setTimeout(() => folderInputRef.current?.focus(), 50);
   }, [mkdirOpen]);
+
+  useEffect(() => {
+    if (renameTarget) setTimeout(() => renameInputRef.current?.focus(), 50);
+  }, [renameTarget]);
 
   useEffect(() => {
     const unlisten = getCurrentWebviewWindow().onDragDropEvent(async (event) => {
@@ -81,6 +120,8 @@ export function SftpBrowser() {
 
       if (event.payload.type === "drop") {
         setDropActive(false);
+        const uploadPath = dropTargetPath ?? path;
+        setDropTargetPath(null);
         const paths = event.payload.paths ?? [];
         if (paths.length === 0) return;
 
@@ -88,7 +129,7 @@ export function SftpBrowser() {
         for (const localPath of paths) {
           const name = basenameFromPath(localPath);
           if (!name) continue;
-          const remotePath = `${path}/${name}`.replace(/\\/g, "/").replace("//", "/");
+          const remotePath = `${uploadPath}/${name}`.replace(/\\/g, "/").replace("//", "/");
           try {
             await sftpUpload(sessionId, localPath, remotePath);
             successCount += 1;
@@ -107,7 +148,7 @@ export function SftpBrowser() {
     return () => {
       unlisten.then((fn) => fn()).catch(() => undefined);
     };
-  }, [sessionId, path]);
+  }, [sessionId, path, dropTargetPath]);
 
   function goUp() {
     const parts = path.split("/").filter(Boolean);
@@ -148,6 +189,48 @@ export function SftpBrowser() {
     navigate("/");
   }
 
+  async function handleDownload(entry: FileEntry) {
+    if (!sessionId) return;
+    const savePath = await save({ defaultPath: entry.name });
+    if (!savePath) return;
+    try {
+      await sftpDownload(sessionId, entry.path, savePath);
+      toast.success(`Downloaded "${entry.name}"`);
+    } catch (e) {
+      toast.error(String(e));
+    }
+  }
+
+  async function handleOpenInEditor(entry: FileEntry) {
+    if (!sessionId) return;
+    try {
+      await sftpOpenInEditor(sessionId, entry.path);
+    } catch (e) {
+      toast.error(String(e));
+    }
+  }
+
+  async function handleRename() {
+    if (!renameTarget || !sessionId) return;
+    const newName = renameName.trim();
+    if (!newName || newName === renameTarget.name) { setRenameTarget(null); return; }
+    const dir = renameTarget.path.substring(0, renameTarget.path.lastIndexOf("/")) || "/";
+    const newPath = `${dir}/${newName}`.replace("//", "/");
+    try {
+      await sftpRename(sessionId, renameTarget.path, newPath);
+      toast.success(`Renamed to "${newName}"`);
+      setRenameTarget(null);
+      loadDir(path);
+    } catch (e) {
+      toast.error(String(e));
+    }
+  }
+
+  function handleCopyPath(entry: FileEntry) {
+    navigator.clipboard.writeText(entry.path);
+    toast.success("Path copied to clipboard");
+  }
+
   const breadcrumbs = path.split("/").filter(Boolean);
 
   function openContextMenu(e: React.MouseEvent, target: FileEntry | null) {
@@ -162,8 +245,36 @@ export function SftpBrowser() {
     if (target?.is_dir) {
       items.push({
         label: "Open",
-        icon: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>,
+        icon: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" /></svg>,
         onClick: () => loadDir(target.path),
+      });
+      items.push({ type: "separator" });
+    }
+
+    if (target && !target.is_dir) {
+      items.push({
+        label: "Open in editor",
+        icon: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>,
+        onClick: () => handleOpenInEditor(target),
+      });
+      items.push({
+        label: "Download",
+        icon: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg>,
+        onClick: () => handleDownload(target),
+      });
+      items.push({ type: "separator" });
+    }
+
+    if (target) {
+      items.push({
+        label: "Rename",
+        icon: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z" /></svg>,
+        onClick: () => { setRenameTarget(target); setRenameName(target.name); },
+      });
+      items.push({
+        label: "Copy path",
+        icon: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="9" y="9" width="13" height="13" rx="2" /><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" /></svg>,
+        onClick: () => handleCopyPath(target),
       });
       items.push({ type: "separator" });
     }
@@ -171,12 +282,12 @@ export function SftpBrowser() {
     items.push(
       {
         label: "New folder",
-        icon: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>,
+        icon: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>,
         onClick: () => { setFolderName(""); setMkdirOpen(true); },
       },
       {
         label: "Refresh",
-        icon: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.13-3.36L23 10M1 14l5.37 4.36A9 9 0 0 0 20.49 15"/></svg>,
+        icon: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="23 4 23 10 17 10" /><polyline points="1 20 1 14 7 14" /><path d="M3.51 9a9 9 0 0 1 14.13-3.36L23 10M1 14l5.37 4.36A9 9 0 0 0 20.49 15" /></svg>,
         onClick: () => loadDir(path),
       }
     );
@@ -186,7 +297,7 @@ export function SftpBrowser() {
       items.push({
         label: "Delete",
         danger: true,
-        icon: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>,
+        icon: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6" /><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" /><path d="M10 11v6M14 11v6" /><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" /></svg>,
         onClick: () => setDeleteTarget(target),
       });
     }
@@ -362,31 +473,43 @@ export function SftpBrowser() {
                 ))}
               </tr>
             </thead>
-            <tbody>
+            <tbody onKeyDown={handleKeyDown} tabIndex={0} style={{ outline: "none" }}>
               {entries.map((entry) => (
                 <tr
                   key={entry.path}
+                  onClick={() => handleRowClick(entry)}
+                  onDoubleClick={() => handleRowDoubleClick(entry)}
+                  onContextMenu={(e) => openContextMenu(e, entry)}
+                  onDragEnter={() => entry.is_dir && setDropTargetPath(entry.path)}
+                  onDragLeave={() => setDropTargetPath(null)}
                   style={{
                     borderBottom: "1px solid var(--border)",
                     transition: "background 0.1s",
-                    cursor: entry.is_dir ? "pointer" : "default",
+                    cursor: "pointer",
+                    background: dropTargetPath === entry.path ? "var(--indigo-surface)" : selectedEntry?.path === entry.path ? "var(--accent-surface)" : undefined,
+                    outline: dropTargetPath === entry.path ? "1px solid var(--indigo)" : selectedEntry?.path === entry.path ? "1px solid var(--accent)" : undefined,
                   }}
-                  onMouseEnter={(e) => (e.currentTarget.style.background = "var(--bg-3)")}
-                  onMouseLeave={(e) => (e.currentTarget.style.background = "")}
-                  onDoubleClick={() => entry.is_dir && loadDir(entry.path)}
-                  onContextMenu={(e) => openContextMenu(e, entry)}
+                  onMouseEnter={(e) => {
+                    if (dropTargetPath !== entry.path && selectedEntry?.path !== entry.path) {
+                      e.currentTarget.style.background = "var(--bg-3)";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (dropTargetPath !== entry.path && selectedEntry?.path !== entry.path) {
+                      e.currentTarget.style.background = "";
+                    }
+                  }}
                 >
                   <td style={{ padding: "0.6rem 1rem" }}>
                     <span
                       style={{
-                        cursor: entry.is_dir ? "pointer" : "default",
+                        cursor: "pointer",
                         color: entry.is_dir ? "var(--indigo)" : "var(--text-0)",
                         fontSize: "0.85rem",
                         display: "flex",
                         alignItems: "center",
                         gap: "0.55rem",
                       }}
-                      onClick={() => entry.is_dir && loadDir(entry.path)}
                     >
                       {entry.is_dir ? (
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -490,6 +613,49 @@ export function SftpBrowser() {
         onConfirm={confirmDelete}
         onCancel={() => setDeleteTarget(null)}
       />
+
+      {renameTarget && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0,0,0,0.6)",
+            backdropFilter: "blur(10px)",
+            WebkitBackdropFilter: "blur(10px)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 200,
+            animation: "fadeIn 0.15s ease-out",
+          }}
+          onClick={(e) => e.target === e.currentTarget && setRenameTarget(null)}
+        >
+          <div
+            className="glass-hi scale-in"
+            style={{ border: "1px solid var(--border-hi)", borderRadius: 16, padding: "1.5rem", width: 340, boxShadow: "0 24px 64px rgba(0,0,0,0.65)" }}
+          >
+            <h3 style={{ fontSize: "0.95rem", marginBottom: "1.1rem", color: "var(--text-0)" }}>Rename</h3>
+            <div className="field">
+              <label>New name</label>
+              <input
+                ref={renameInputRef}
+                value={renameName}
+                onChange={(e) => setRenameName(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleRename();
+                  if (e.key === "Escape") setRenameTarget(null);
+                }}
+              />
+            </div>
+            <div style={{ display: "flex", gap: "0.5rem", justifyContent: "flex-end", marginTop: "1.25rem" }}>
+              <button className="btn btn-ghost btn-sm" onClick={() => setRenameTarget(null)}>Cancel</button>
+              <button className="btn btn-primary btn-sm" onClick={handleRename} disabled={!renameName.trim()}>
+                Rename
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {contextMenu && (
         <ContextMenu

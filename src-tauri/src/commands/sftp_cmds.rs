@@ -195,3 +195,55 @@ pub async fn sftp_delete(
             .map_err(|e| AppError::Sftp(e.to_string()))
     }
 }
+
+#[tauri::command]
+pub async fn sftp_rename(
+    session_id: String,
+    old_path: String,
+    new_path: String,
+    state: State<'_, AppState>,
+) -> Result<()> {
+    let mut sessions = state.sessions.lock().await;
+    let sftp = sessions.get_sftp_mut(&session_id)?;
+    sftp.rename(&old_path, &new_path)
+        .await
+        .map_err(|e| AppError::Sftp(e.to_string()))
+}
+
+/// Download a remote file to the OS temp directory and open it with the system default app.
+#[tauri::command]
+pub async fn sftp_open_in_editor(
+    session_id: String,
+    remote_path: String,
+    state: State<'_, AppState>,
+) -> Result<String> {
+    let filename = remote_path
+        .split('/')
+        .filter(|s| !s.is_empty())
+        .last()
+        .unwrap_or("file")
+        .to_string();
+
+    let local_path = std::env::temp_dir().join(&filename);
+
+    let buf = {
+        let mut sessions = state.sessions.lock().await;
+        let sftp = sessions.get_sftp_mut(&session_id)?;
+        let mut remote_file = sftp
+            .open(&remote_path)
+            .await
+            .map_err(|e| AppError::Sftp(e.to_string()))?;
+        let mut buf = Vec::new();
+        remote_file
+            .read_to_end(&mut buf)
+            .await
+            .map_err(|e| AppError::Sftp(e.to_string()))?;
+        buf
+    };
+
+    tokio::fs::write(&local_path, &buf).await?;
+
+    open::that(&local_path).map_err(|e| AppError::Sftp(e.to_string()))?;
+
+    Ok(local_path.to_string_lossy().to_string())
+}
