@@ -1,5 +1,5 @@
 import { check } from "@tauri-apps/plugin-updater";
-import { useEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
 import {
   BrowserRouter,
   Navigate,
@@ -63,9 +63,11 @@ function StartupUpdateCheck() {
 export default function App() {
   const themeId = useSettingsStore((s) => s.themeId);
 
-  useEffect(() => {
-    const theme = THEMES.find((t) => t.id === themeId) ?? THEMES[0];
-    applyTheme(theme);
+  useLayoutEffect(() => {
+    const theme = THEMES.length > 0 ? THEMES.find((t) => t.id === themeId) ?? THEMES[0] : undefined;
+    if (theme) {
+      applyTheme(theme);
+    }
   }, [themeId]);
 
   return (

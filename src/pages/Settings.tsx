@@ -98,6 +98,8 @@ function AppearanceSection() {
             <button
               key={theme.id}
               onClick={() => setThemeId(theme.id)}
+              aria-label={`Select ${theme.label} theme`}
+              aria-pressed={active}
               style={{
                 background: theme.vars["--bg-1"] ?? "var(--bg-1)",
                 border: `2px solid ${active ? "var(--accent)" : "var(--border)"}`,

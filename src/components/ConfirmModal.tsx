@@ -70,7 +70,7 @@ export function ConfirmModal({
           <div
             style={{
               height: 3,
-              background: "#ffffff",
+              background: "var(--red)",
             }}
           />
         )}

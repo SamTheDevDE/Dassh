@@ -14,6 +14,8 @@ pub enum AppError {
     Ssh(String),
     #[error("SFTP error: {0}")]
     Sftp(String),
+    #[error("Open error: {0}")]
+    ExternalOpen(String),
     #[error("Crypto error: {0}")]
     Crypto(String),
     #[error("Key error: {0}")]

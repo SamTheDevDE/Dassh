@@ -5,7 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ConfirmModal } from "../components/ConfirmModal";
 import { ContextMenu, type ContextMenuItem } from "../components/ContextMenu";
 import { useToast } from "../components/Toast";
-import { sftpDelete, sftpDownload, sftpListDir, sftpMkdir, sftpOpenInEditor, sftpRename, sftpUpload } from "../lib/commands";
+import { sftpCleanupTempFile, sftpDelete, sftpDownload, sftpListDir, sftpMkdir, sftpOpenInEditor, sftpRename, sftpUpload } from "../lib/commands";
 import { useSessionsStore } from "../store/sessions";
 import type { FileEntry } from "../types";
 
@@ -45,6 +45,7 @@ export function SftpBrowser() {
   const [renameTarget, setRenameTarget] = useState<FileEntry | null>(null);
   const [renameName, setRenameName] = useState("");
   const renameInputRef = useRef<HTMLInputElement>(null);
+  const openedTempPathsRef = useRef<string[]>([]);
 
   const session = sessions.find((s) => s.id === sessionId);
 
@@ -74,11 +75,19 @@ export function SftpBrowser() {
   };
 
   const handleRowDoubleClick = async (entry: FileEntry) => {
+    if (!sessionId) {
+      toast.error("No active SFTP session");
+      return;
+    }
+
     if (entry.is_dir) {
       loadDir(entry.path);
     } else {
       try {
-        await sftpOpenInEditor(sessionId!, entry.path);
+        const localPath = await sftpOpenInEditor(sessionId, entry.path);
+        if (!openedTempPathsRef.current.includes(localPath)) {
+          openedTempPathsRef.current.push(localPath);
+        }
       } catch (e) {
         toast.error(String(e));
       }
@@ -105,6 +114,16 @@ export function SftpBrowser() {
   }, [renameTarget]);
 
   useEffect(() => {
+    return () => {
+      const paths = openedTempPathsRef.current;
+      openedTempPathsRef.current = [];
+      for (const localPath of paths) {
+        sftpCleanupTempFile(localPath).catch(() => undefined);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
     const unlisten = getCurrentWebviewWindow().onDragDropEvent(async (event) => {
       if (!sessionId) return;
 
@@ -129,7 +148,7 @@ export function SftpBrowser() {
         for (const localPath of paths) {
           const name = basenameFromPath(localPath);
           if (!name) continue;
-          const remotePath = `${uploadPath}/${name}`.replace(/\\/g, "/").replace("//", "/");
+          const remotePath = `${uploadPath}/${name}`.replace(/\\/g, "/").replace(/\/+/g, "/");
           try {
             await sftpUpload(sessionId, localPath, remotePath);
             successCount += 1;
@@ -202,9 +221,15 @@ export function SftpBrowser() {
   }
 
   async function handleOpenInEditor(entry: FileEntry) {
-    if (!sessionId) return;
+    if (!sessionId) {
+      toast.error("No active SFTP session");
+      return;
+    }
     try {
-      await sftpOpenInEditor(sessionId, entry.path);
+      const localPath = await sftpOpenInEditor(sessionId, entry.path);
+      if (!openedTempPathsRef.current.includes(localPath)) {
+        openedTempPathsRef.current.push(localPath);
+      }
     } catch (e) {
       toast.error(String(e));
     }
@@ -226,9 +251,13 @@ export function SftpBrowser() {
     }
   }
 
-  function handleCopyPath(entry: FileEntry) {
-    navigator.clipboard.writeText(entry.path);
-    toast.success("Path copied to clipboard");
+  async function handleCopyPath(entry: FileEntry) {
+    try {
+      await navigator.clipboard.writeText(entry.path);
+      toast.success("Path copied to clipboard");
+    } catch {
+      toast.error("Failed to copy path to clipboard");
+    }
   }
 
   const breadcrumbs = path.split("/").filter(Boolean);

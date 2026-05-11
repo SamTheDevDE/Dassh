@@ -45,7 +45,7 @@ export const sftpDelete = (sessionId: string, path: string, isDir: boolean) =>
   invoke<void>("sftp_delete", { sessionId, path, isDir });
 export const sftpRename = (sessionId: string, oldPath: string, newPath: string) =>
   invoke<void>("sftp_rename", { sessionId, oldPath, newPath });
-export const sftpDownloadToTemp = (sessionId: string, remotePath: string) =>
-  invoke<string>("sftp_download_to_temp", { sessionId, remotePath });
 export const sftpOpenInEditor = (sessionId: string, remotePath: string) =>
   invoke<string>("sftp_open_in_editor", { sessionId, remotePath });
+export const sftpCleanupTempFile = (localPath: string) =>
+  invoke<void>("sftp_cleanup_temp_file", { localPath });

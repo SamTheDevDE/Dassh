@@ -48,6 +48,7 @@ pub fn run() {
             sftp_delete,
             sftp_rename,
             sftp_open_in_editor,
+            sftp_cleanup_temp_file,
         ])
         .setup(|_app| {
             #[cfg(debug_assertions)]

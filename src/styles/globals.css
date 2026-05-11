@@ -22,19 +22,19 @@
   --accent-surface: rgba(200, 200, 200, 0.06);
   --accent-glow: rgba(200, 200, 200, 0.08);
 
-  --indigo: #c8c8c8;
-  --indigo-2: #a0a0a0;
-  --indigo-surface: rgba(200, 200, 200, 0.07);
-  --indigo-glow: rgba(200, 200, 200, 0.12);
+  --indigo: #9ba9ff;
+  --indigo-2: #7f8ddb;
+  --indigo-surface: rgba(155, 169, 255, 0.12);
+  --indigo-glow: rgba(155, 169, 255, 0.18);
 
-  --green: #c8c8c8;
-  --green-surface: rgba(200, 200, 200, 0.07);
-  --red: #c8c8c8;
-  --red-surface: rgba(200, 200, 200, 0.07);
-  --red-border: rgba(200, 200, 200, 0.20);
-  --yellow: #c8c8c8;
-  --yellow-surface: rgba(200, 200, 200, 0.07);
-  --blue: #c8c8c8;
+  --green: #8ccf98;
+  --green-surface: rgba(140, 207, 152, 0.12);
+  --red: #df8f8f;
+  --red-surface: rgba(223, 143, 143, 0.12);
+  --red-border: rgba(223, 143, 143, 0.26);
+  --yellow: #d8c184;
+  --yellow-surface: rgba(216, 193, 132, 0.12);
+  --blue: #7fb6e8;
 
   --bg-surface: var(--bg-2);
 

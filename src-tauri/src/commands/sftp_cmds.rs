@@ -4,8 +4,9 @@ use crate::{
     vault::models::AuthType,
 };
 use serde::Serialize;
+use std::path::Path;
 use tauri::State;
-use tokio::io::{AsyncReadExt, AsyncWriteExt};
+use tokio::{fs::File, io::{AsyncReadExt, AsyncWriteExt}, task::spawn_blocking};
 use uuid::Uuid;
 
 #[derive(Debug, Serialize)]
@@ -217,14 +218,16 @@ pub async fn sftp_open_in_editor(
     remote_path: String,
     state: State<'_, AppState>,
 ) -> Result<String> {
-    let filename = remote_path
-        .split('/')
-        .filter(|s| !s.is_empty())
-        .last()
-        .unwrap_or("file")
-        .to_string();
+    let normalized_remote_path = remote_path.replace('\\', "/");
+    let filename = Path::new(&normalized_remote_path)
+        .file_name()
+        .and_then(|s| s.to_str())
+        .filter(|s| !s.is_empty() && !s.contains('/') && !s.contains('\\'))
+        .unwrap_or("file");
 
-    let local_path = std::env::temp_dir().join(&filename);
+    let unique_name = format!("{filename}-{}", Uuid::new_v4().simple());
+    let local_path = std::env::temp_dir().join(unique_name);
+    let temp_path = local_path.with_extension("part");
 
     let buf = {
         let mut sessions = state.sessions.lock().await;
@@ -241,9 +244,27 @@ pub async fn sftp_open_in_editor(
         buf
     };
 
-    tokio::fs::write(&local_path, &buf).await?;
+    let mut temp_file = File::create(&temp_path).await?;
+    temp_file.write_all(&buf).await?;
+    temp_file.sync_all().await?;
+    drop(temp_file);
 
-    open::that(&local_path).map_err(|e| AppError::Sftp(e.to_string()))?;
+    tokio::fs::rename(&temp_path, &local_path).await?;
+
+    let open_target = local_path.clone();
+    spawn_blocking(move || open::that(&open_target))
+        .await
+        .map_err(|e| AppError::ExternalOpen(format!("Open task join error: {e}")))?
+        .map_err(|e| AppError::ExternalOpen(e.to_string()))?;
 
     Ok(local_path.to_string_lossy().to_string())
+}
+
+#[tauri::command]
+pub async fn sftp_cleanup_temp_file(local_path: String) -> Result<()> {
+    match tokio::fs::remove_file(&local_path).await {
+        Ok(()) => Ok(()),
+        Err(e) if e.kind() == std::io::ErrorKind::NotFound => Ok(()),
+        Err(e) => Err(AppError::Io(e)),
+    }
 }
